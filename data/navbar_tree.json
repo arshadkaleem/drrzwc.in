@@ -1,0 +1,920 @@
+[
+  {
+    "id": 16,
+    "title": "Home",
+    "url": "http://localhost/drrzwc.in/",
+    "parent": "0",
+    "object_id": "7",
+    "object": "page",
+    "children": []
+  },
+  {
+    "id": 382,
+    "title": "About Us",
+    "url": "#",
+    "parent": "0",
+    "object_id": "382",
+    "object": "custom",
+    "children": [
+      {
+        "id": 20,
+        "title": "About Us",
+        "url": "http://localhost/drrzwc.in/about-us/",
+        "parent": "382",
+        "object_id": "18",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1414,
+        "title": "Principal Message",
+        "url": "http://localhost/drrzwc.in/about-us/masseges/",
+        "parent": "382",
+        "object_id": "1374",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 102,
+        "title": "Academic Enrichment Activities",
+        "url": "http://localhost/drrzwc.in/academic-enrichment-activities/",
+        "parent": "382",
+        "object_id": "24",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 192,
+        "title": "College Communities",
+        "url": "http://localhost/drrzwc.in/college-communities/",
+        "parent": "382",
+        "object_id": "188",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 23,
+        "title": "Vision and Mission",
+        "url": "http://localhost/drrzwc.in/vision-and-mission/",
+        "parent": "382",
+        "object_id": "21",
+        "object": "page",
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Courses",
+    "url": "#",
+    "parent": "0",
+    "object_id": "9",
+    "object": "custom",
+    "children": [
+      {
+        "id": 155,
+        "title": "Junior",
+        "url": "http://localhost/drrzwc.in/junior/",
+        "parent": "9",
+        "object_id": "150",
+        "object": "page",
+        "children": [
+          {
+            "id": 1521,
+            "title": "11th Arts,Science",
+            "url": "http://localhost/drrzwc.in/11th-artsscience/",
+            "parent": "155",
+            "object_id": "1516",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1520,
+            "title": "12th Arts,Science",
+            "url": "http://localhost/drrzwc.in/12th-artsscience/",
+            "parent": "155",
+            "object_id": "1518",
+            "object": "page",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 275,
+        "title": "Graduation",
+        "url": "#",
+        "parent": "9",
+        "object_id": "275",
+        "object": "custom",
+        "children": [
+          {
+            "id": 276,
+            "title": "Arts",
+            "url": "#",
+            "parent": "275",
+            "object_id": "276",
+            "object": "custom",
+            "children": [
+              {
+                "id": 285,
+                "title": "B.A.",
+                "url": "http://localhost/drrzwc.in/b-a/",
+                "parent": "276",
+                "object_id": "283",
+                "object": "page",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": 277,
+            "title": "Science",
+            "url": "#",
+            "parent": "275",
+            "object_id": "277",
+            "object": "custom",
+            "children": [
+              {
+                "id": 294,
+                "title": "B.Sc. (General)",
+                "url": "http://localhost/drrzwc.in/b-sc-general/",
+                "parent": "277",
+                "object_id": "286",
+                "object": "page",
+                "children": []
+              },
+              {
+                "id": 292,
+                "title": "B.Sc.(CS) (Bachelor of Computer Science)",
+                "url": "http://localhost/drrzwc.in/b-sc-cs-bachelor-of-computer-science/",
+                "parent": "277",
+                "object_id": "290",
+                "object": "page",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 280,
+        "title": "Post-Graduation",
+        "url": "#",
+        "parent": "9",
+        "object_id": "280",
+        "object": "custom",
+        "children": [
+          {
+            "id": 281,
+            "title": "Science",
+            "url": "#",
+            "parent": "280",
+            "object_id": "281",
+            "object": "custom",
+            "children": [
+              {
+                "id": 1522,
+                "title": "M.sc. Chemistry",
+                "url": "http://localhost/drrzwc.in/m-sc-chemistry/",
+                "parent": "281",
+                "object_id": "1507",
+                "object": "page",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": 1527,
+            "title": "ARTS",
+            "url": "http://localhost/drrzwc.in/arts1/",
+            "parent": "280",
+            "object_id": "1525",
+            "object": "page",
+            "children": [
+              {
+                "id": 1523,
+                "title": "MA English",
+                "url": "http://localhost/drrzwc.in/ma-english/",
+                "parent": "1527",
+                "object_id": "1505",
+                "object": "page",
+                "children": []
+              },
+              {
+                "id": 1524,
+                "title": "MA Urdu",
+                "url": "http://localhost/drrzwc.in/ma-urdu/",
+                "parent": "1527",
+                "object_id": "1503",
+                "object": "page",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Departments",
+    "url": "#",
+    "parent": "0",
+    "object_id": "10",
+    "object": "custom",
+    "children": [
+      {
+        "id": 149,
+        "title": "Arts",
+        "url": "http://localhost/drrzwc.in/?page_id=140",
+        "parent": "10",
+        "object_id": "140",
+        "object": "page",
+        "children": [
+          {
+            "id": 354,
+            "title": "Urdu",
+            "url": "http://localhost/drrzwc.in/urdu/",
+            "parent": "149",
+            "object_id": "319",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 353,
+            "title": "Hindi",
+            "url": "http://localhost/drrzwc.in/hindi/",
+            "parent": "149",
+            "object_id": "321",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 352,
+            "title": "English",
+            "url": "http://localhost/drrzwc.in/english/",
+            "parent": "149",
+            "object_id": "323",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 351,
+            "title": "Political Science",
+            "url": "http://localhost/drrzwc.in/political-science-2/",
+            "parent": "149",
+            "object_id": "325",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 350,
+            "title": "History",
+            "url": "http://localhost/drrzwc.in/history/",
+            "parent": "149",
+            "object_id": "327",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 348,
+            "title": "Home science",
+            "url": "http://localhost/drrzwc.in/home-science/",
+            "parent": "149",
+            "object_id": "331",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1349,
+            "title": "Psychology",
+            "url": "http://localhost/drrzwc.in/psychology-2/",
+            "parent": "149",
+            "object_id": "1347",
+            "object": "page",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 147,
+        "title": "Science",
+        "url": "http://localhost/drrzwc.in/?page_id=144",
+        "parent": "10",
+        "object_id": "144",
+        "object": "page",
+        "children": [
+          {
+            "id": 381,
+            "title": "Physics",
+            "url": "http://localhost/drrzwc.in/physics/",
+            "parent": "147",
+            "object_id": "355",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 380,
+            "title": "Chemistry",
+            "url": "http://localhost/drrzwc.in/chemistry/",
+            "parent": "147",
+            "object_id": "357",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 379,
+            "title": "Computer Science",
+            "url": "http://localhost/drrzwc.in/computer-science-2/",
+            "parent": "147",
+            "object_id": "359",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 378,
+            "title": "Botany",
+            "url": "http://localhost/drrzwc.in/botany/",
+            "parent": "147",
+            "object_id": "361",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1871,
+            "title": "Zoology",
+            "url": "http://localhost/drrzwc.in/zoology/",
+            "parent": "147",
+            "object_id": "1867",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 373,
+            "title": "Mathematics",
+            "url": "http://localhost/drrzwc.in/mathematics/",
+            "parent": "147",
+            "object_id": "371",
+            "object": "page",
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Facilities",
+    "url": "#",
+    "parent": "0",
+    "object_id": "11",
+    "object": "custom",
+    "children": [
+      {
+        "id": 91,
+        "title": "Sports",
+        "url": "http://localhost/drrzwc.in/sports/",
+        "parent": "11",
+        "object_id": "80",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 90,
+        "title": "NSS",
+        "url": "http://localhost/drrzwc.in/nss/",
+        "parent": "11",
+        "object_id": "82",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 88,
+        "title": "Scholarship &#038; Goi",
+        "url": "http://localhost/drrzwc.in/scholarship-goi/",
+        "parent": "11",
+        "object_id": "86",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 95,
+        "title": "RTI",
+        "url": "http://localhost/drrzwc.in/rti/",
+        "parent": "11",
+        "object_id": "93",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1551,
+        "title": "VENDING MACHINE",
+        "url": "http://localhost/drrzwc.in/vending-machine/",
+        "parent": "11",
+        "object_id": "1549",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1552,
+        "title": "WI FI",
+        "url": "http://localhost/drrzwc.in/wi-fi/",
+        "parent": "11",
+        "object_id": "1547",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1554,
+        "title": "DEPARTMENTAL LIBRARY",
+        "url": "http://localhost/drrzwc.in/departmental-library/",
+        "parent": "11",
+        "object_id": "1543",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1496,
+        "title": "Earn And Learn",
+        "url": "http://localhost/drrzwc.in/earn-and-learn/",
+        "parent": "11",
+        "object_id": "1494",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1498,
+        "title": "Reading Room",
+        "url": "http://localhost/drrzwc.in/reading-room/",
+        "parent": "11",
+        "object_id": "1490",
+        "object": "page",
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 1620,
+    "title": "Library",
+    "url": "https://drrzwclibrary.in/",
+    "parent": "0",
+    "object_id": "1620",
+    "object": "custom",
+    "children": []
+  },
+  {
+    "id": 68,
+    "title": "Gallery",
+    "url": "http://localhost/drrzwc.in/gallery/",
+    "parent": "0",
+    "object_id": "50",
+    "object": "page",
+    "children": []
+  },
+  {
+    "id": 13,
+    "title": "Placements",
+    "url": "#",
+    "parent": "0",
+    "object_id": "13",
+    "object": "custom",
+    "children": [
+      {
+        "id": 38,
+        "title": "About Placement Cell",
+        "url": "http://localhost/drrzwc.in/about-placement-cell/",
+        "parent": "13",
+        "object_id": "33",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2050,
+        "title": "Progression to Higher Education",
+        "url": "http://localhost/drrzwc.in/progression-to-higher-education/",
+        "parent": "13",
+        "object_id": "2046",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2339,
+        "title": "Placement 2023-24",
+        "url": "http://localhost/drrzwc.in/placement-2023-24/",
+        "parent": "13",
+        "object_id": "2335",
+        "object": "page",
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "IQAC",
+    "url": "#",
+    "parent": "0",
+    "object_id": "14",
+    "object": "custom",
+    "children": [
+      {
+        "id": 105,
+        "title": "IQAC",
+        "url": "http://localhost/drrzwc.in/about-iqac/",
+        "parent": "14",
+        "object_id": "103",
+        "object": "page",
+        "children": [
+          {
+            "id": 1916,
+            "title": "IQAC 2019-20",
+            "url": "http://localhost/drrzwc.in/iqac-2019-20/",
+            "parent": "105",
+            "object_id": "1911",
+            "object": "page",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 2332,
+        "title": "Projects",
+        "url": "http://localhost/drrzwc.in/projects/",
+        "parent": "14",
+        "object_id": "2324",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 117,
+        "title": "AQAR",
+        "url": "http://localhost/drrzwc.in/aqar/",
+        "parent": "14",
+        "object_id": "115",
+        "object": "page",
+        "children": [
+          {
+            "id": 1706,
+            "title": "AQAR Details",
+            "url": "http://localhost/drrzwc.in/aqar-details/",
+            "parent": "117",
+            "object_id": "1698",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2134,
+            "title": "Naac Criteria 1",
+            "url": "http://localhost/drrzwc.in/naac-criteria-1/",
+            "parent": "117",
+            "object_id": "2132",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2025,
+            "title": "Naac Criteria 2",
+            "url": "http://localhost/drrzwc.in/naac-criteria-2/",
+            "parent": "117",
+            "object_id": "2023",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2156,
+            "title": "NAAC Criteria 3",
+            "url": "http://localhost/drrzwc.in/naac-criteria-3/",
+            "parent": "117",
+            "object_id": "2152",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2207,
+            "title": "Naac Criteria 4",
+            "url": "http://localhost/drrzwc.in/naac-criteria-4/",
+            "parent": "117",
+            "object_id": "2205",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1485,
+            "title": "Naac Criteria 5",
+            "url": "http://localhost/drrzwc.in/aqar/new-naac/",
+            "parent": "117",
+            "object_id": "1452",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2075,
+            "title": "Naac Criteria 6",
+            "url": "http://localhost/drrzwc.in/naac-criteria-6/",
+            "parent": "117",
+            "object_id": "2073",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2218,
+            "title": "Naac Criteria 7",
+            "url": "http://localhost/drrzwc.in/naac-criteria-7/",
+            "parent": "117",
+            "object_id": "2216",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1669,
+            "title": "Curriculum Enrichment",
+            "url": "http://localhost/drrzwc.in/curriculum-enrichment/",
+            "parent": "117",
+            "object_id": "1667",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2488,
+            "title": "Learning Outcome",
+            "url": "http://localhost/drrzwc.in/learning-outcome/",
+            "parent": "117",
+            "object_id": "1635",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1840,
+            "title": "Field Projects",
+            "url": "http://localhost/drrzwc.in/field-projects/",
+            "parent": "117",
+            "object_id": "1813",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1734,
+            "title": "Academic Flexibility",
+            "url": "http://localhost/drrzwc.in/academic-flexibility/",
+            "parent": "117",
+            "object_id": "1729",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1741,
+            "title": "Continuous Internal Evaluation",
+            "url": "http://localhost/drrzwc.in/continuous-internal-evaluation/",
+            "parent": "117",
+            "object_id": "1735",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1793,
+            "title": "Green/ Energy Audit",
+            "url": "http://localhost/drrzwc.in/green-energy-audit/",
+            "parent": "117",
+            "object_id": "1787",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 1892,
+            "title": "Academic Calendar",
+            "url": "http://localhost/drrzwc.in/academic-calendar/",
+            "parent": "117",
+            "object_id": "1887",
+            "object": "page",
+            "children": []
+          },
+          {
+            "id": 2087,
+            "title": "Feedback",
+            "url": "http://localhost/drrzwc.in/feedback/",
+            "parent": "117",
+            "object_id": "2085",
+            "object": "page",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": 131,
+        "title": "Action Taken Report",
+        "url": "http://localhost/drrzwc.in/action-taken-report/",
+        "parent": "14",
+        "object_id": "126",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 130,
+        "title": "College Committees",
+        "url": "http://localhost/drrzwc.in/college-committees/",
+        "parent": "14",
+        "object_id": "128",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2621,
+        "title": "Beyond Campus",
+        "url": "http://localhost/drrzwc.in/beyond-campus/",
+        "parent": "14",
+        "object_id": "2614",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 138,
+        "title": "NAAC Peer Team Visit Video",
+        "url": "http://localhost/drrzwc.in/naac-peer-team-visit-video/",
+        "parent": "14",
+        "object_id": "136",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1723,
+        "title": "Student Satisfaction Survey",
+        "url": "http://localhost/drrzwc.in/student-satisfaction-survey/",
+        "parent": "14",
+        "object_id": "1715",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1750,
+        "title": "Student Centric Activities",
+        "url": "http://localhost/drrzwc.in/student-centric-activities/",
+        "parent": "14",
+        "object_id": "1743",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1722,
+        "title": "Redressal",
+        "url": "http://localhost/drrzwc.in/redressal/",
+        "parent": "14",
+        "object_id": "1717",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1721,
+        "title": "Enrolment Student List",
+        "url": "http://localhost/drrzwc.in/enrolment-student-list/",
+        "parent": "14",
+        "object_id": "1719",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2004,
+        "title": "Time table Dr.RZCW",
+        "url": "http://localhost/drrzwc.in/time-table-dr-rzcw/",
+        "parent": "14",
+        "object_id": "1999",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2003,
+        "title": "University Academic calendar",
+        "url": "http://localhost/drrzwc.in/university-academic-calendar/",
+        "parent": "14",
+        "object_id": "2001",
+        "object": "page",
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 1557,
+    "title": "STUDENTS CORNER",
+    "url": "http://localhost/drrzwc.in/students-corner/",
+    "parent": "0",
+    "object_id": "1555",
+    "object": "page",
+    "children": [
+      {
+        "id": 1575,
+        "title": "CARRIER GUIDANCE",
+        "url": "http://localhost/drrzwc.in/carrier-guidance/",
+        "parent": "1557",
+        "object_id": "1573",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2610,
+        "title": "Women Cell",
+        "url": "http://localhost/drrzwc.in/women-cell/",
+        "parent": "1557",
+        "object_id": "2605",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 125,
+        "title": "Alumni",
+        "url": "http://localhost/drrzwc.in/alumni-meet-report/",
+        "parent": "1557",
+        "object_id": "123",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1560,
+        "title": "PSYCHOLOGICAL COUNSELLING",
+        "url": "http://localhost/drrzwc.in/psychological-counselling/",
+        "parent": "1557",
+        "object_id": "1558",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1563,
+        "title": "INTERNAL COMPLAINT CELL",
+        "url": "http://localhost/drrzwc.in/internal-complaint-cell/",
+        "parent": "1557",
+        "object_id": "1561",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2489,
+        "title": "Learning Outcome",
+        "url": "http://localhost/drrzwc.in/learning-outcome/",
+        "parent": "1557",
+        "object_id": "1635",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 1812,
+        "title": "Advance learners and Slow learners",
+        "url": "http://localhost/drrzwc.in/advance-learners-and-slow-learners/",
+        "parent": "1557",
+        "object_id": "1805",
+        "object": "page",
+        "children": []
+      },
+      {
+        "id": 2062,
+        "title": "Net Set qualified students",
+        "url": "http://localhost/drrzwc.in/net-set-qualified-students/",
+        "parent": "1557",
+        "object_id": "2056",
+        "object": "page",
+        "children": []
+      }
+    ]
+  },
+  {
+    "id": 2670,
+    "title": "NIRF",
+    "url": "http://localhost/drrzwc.in/nirf/",
+    "parent": "0",
+    "object_id": "2661",
+    "object": "page",
+    "children": []
+  },
+  {
+    "id": 402,
+    "title": "Highlights",
+    "url": "#",
+    "parent": "0",
+    "object_id": "402",
+    "object": "custom",
+    "children": []
+  },
+  {
+    "id": 32,
+    "title": "Contact Us",
+    "url": "http://localhost/drrzwc.in/?page_id=30",
+    "parent": "0",
+    "object_id": "30",
+    "object": "page",
+    "children": []
+  },
+  {
+    "id": 1621,
+    "title": "Feedback",
+    "url": "https://rzcw.in/feedback/views/login.php",
+    "parent": "0",
+    "object_id": "1621",
+    "object": "custom",
+    "children": []
+  },
+  {
+    "id": 1920,
+    "title": "Best practices",
+    "url": "http://localhost/drrzwc.in/best-practices/",
+    "parent": "0",
+    "object_id": "1652",
+    "object": "page",
+    "children": []
+  }
+]
