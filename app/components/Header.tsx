@@ -211,17 +211,43 @@ export default function Header() {
       </div>
 
       {/* Logo Banner */}
-      <div className="w-full bg-[#c5a059]/5 border-t-0 py-4 md:py-6 border-b border-zinc-100">
+      <div className="w-full bg-gradient-to-r from-[#0a1d37]/[0.02] via-[#c5a059]/[0.08] to-[#0a1d37]/[0.02] border-t-0 py-4 md:py-6 border-b border-zinc-100/80">
         <div className="max-w-[1200px] mx-auto px-4">
-          <Link href="/">
-            <img
-              src="/wp-content/uploads/2025/06/Web-01.png"
-              alt="Dr. Rafiq Zakaria College for Women Logo"
-              className="max-h-[85px] md:max-h-[110px] w-auto transition-all duration-300 hover:scale-[1.015]"
-              onError={(e) => {
-                e.currentTarget.src = 'https://drrzwc.in/wp-content/uploads/2025/06/Web-01.png';
-              }}
-            />
+          <Link href="/" className="flex flex-col md:flex-row items-center gap-4 md:gap-6 group text-decoration-none select-none">
+            {/* Logo Wrapper */}
+            <div className="flex-shrink-0 relative transition-all duration-500 ease-out group-hover:scale-105 group-hover:rotate-1">
+              {/* Subtle backglow shadow for the logo */}
+              <div className="absolute inset-0 bg-[#c5a059]/10 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <img
+                src="/logo.png"
+                alt="Dr. Rafiq Zakaria College for Women Logo"
+                className="h-[75px] md:h-[95px] w-auto object-contain relative z-10"
+              />
+            </div>
+            
+            {/* Text Content */}
+            <div className="flex flex-col text-center md:text-left gap-1 md:gap-1.5">
+              {/* Campus Title */}
+              <div className="text-[#c5a059] font-heading font-bold text-[10px] md:text-xs uppercase tracking-[0.25em] leading-none transition-colors duration-300 group-hover:text-[#0a1d37]">
+                Dr. Rafiq Zakaria Campus
+              </div>
+              
+              {/* College Title */}
+              <h1 className="text-[#0a1d37] font-serif font-extrabold text-[17px] sm:text-xl md:text-2xl lg:text-3xl leading-tight transition-all duration-300">
+                Dr. Rafiq Zakaria College for Women
+              </h1>
+              
+              {/* Sub-titles / Certifications */}
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2 sm:gap-3 text-zinc-500 font-sans text-[9px] md:text-[11px] font-semibold uppercase tracking-wider mt-0.5">
+                <span className="bg-[#0a1d37]/5 px-2.5 py-0.5 rounded border border-[#0a1d37]/10 text-[#0a1d37] transition-all duration-300 group-hover:bg-[#0a1d37] group-hover:text-[#c5a059]">
+                  NAAC Reaccredited B++
+                </span>
+                <span className="hidden sm:inline text-zinc-300">|</span>
+                <span className="bg-zinc-100/80 px-2.5 py-0.5 rounded border border-zinc-200/50 transition-all duration-300 group-hover:border-[#c5a059]/30">
+                  An ISO 14001:2015 & ISO 50000:2018 Certified
+                </span>
+              </div>
+            </div>
           </Link>
         </div>
       </div>

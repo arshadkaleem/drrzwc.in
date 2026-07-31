@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter), Arial, sans-serif;
   --font-heading: var(--font-outfit), sans-serif;
+  --font-serif: var(--font-playfair), Georgia, serif;
 }
 
 @media (prefers-color-scheme: dark) {
