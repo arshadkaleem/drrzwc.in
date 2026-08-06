@@ -87,20 +87,34 @@ export default function Header() {
 
   // Desktop Submenu component (recursive)
   const DesktopSubmenu = ({ items, depth = 1 }: { items: MenuItem[]; depth?: number }) => {
+    const ulVisibilityClass = 
+      depth === 1
+        ? 'top-full left-0 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 border-t-2 border-t-[#c5a059] rounded-b-md'
+        : depth === 2
+        ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub1:opacity-100 group-hover/sub1:visible group-hover/sub1:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
+        : depth === 3
+        ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub2:opacity-100 group-hover/sub2:visible group-hover/sub2:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
+        : 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub3:opacity-100 group-hover/sub3:visible group-hover/sub3:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md';
+
+    const liGroupClass = 
+      depth === 1
+        ? 'relative group/sub1'
+        : depth === 2
+        ? 'relative group/sub2'
+        : depth === 3
+        ? 'relative group/sub3'
+        : 'relative group/sub4';
+
     return (
       <ul
-        className={`absolute bg-white/95 backdrop-blur-sm text-zinc-800 shadow-xl py-1.5 border border-zinc-150 min-w-[220px] transition-all duration-300 z-50 ${
-          depth === 1
-            ? 'top-full left-0 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 border-t-2 border-t-[#c5a059] rounded-b-md'
-            : 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub:opacity-100 group-hover/sub:visible group-hover/sub:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
-        }`}
+        className={`absolute bg-white/95 backdrop-blur-sm text-zinc-800 shadow-xl py-1.5 border border-zinc-150 min-w-[220px] transition-all duration-300 z-50 ${ulVisibilityClass}`}
       >
         {items.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
           const href = cleanUrl(item.url, item.object_id);
           
           return (
-            <li key={item.id} className={`relative group/sub`}>
+            <li key={item.id} className={liGroupClass}>
               {hasChildren ? (
                 <div className="flex items-center justify-between px-5 py-2.5 text-[11px] font-semibold text-zinc-700 hover:bg-[#0a1d37] hover:text-[#c5a059] hover:pl-6 cursor-pointer transition-all duration-200 border-b border-zinc-100 last:border-0">
                   <span>{item.title}</span>
