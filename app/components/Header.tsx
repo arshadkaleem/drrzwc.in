@@ -21,25 +21,25 @@ export default function Header() {
   // Filter links to split the menu and prevent it from wrapping to 2 lines
   // Removed "Highlights" from top bar titles as requested
   const topBarTitles = ['Library', 'Gallery', 'NIRF', 'Contact Us', 'Feedback'];
-  
-  // Custom sorting order to move "Best practices" up (directly after "About Us")
+
+  // Custom sorting order to move "Best Practices" up (directly after "About Us")
   const mainNavOrder = [
     'Home',
     'About Us',
-    'Best practices',
+    'Best Practices',
     'Courses',
     'Departments',
     'Facilities',
     'Placements',
     'IQAC',
-    'STUDENTS CORNER'
+    'Students Corner'
   ];
 
-  const topBarLinks = navbarTree.filter((item: any) => 
+  const topBarLinks = navbarTree.filter((item: any) =>
     topBarTitles.includes(item.title)
   );
 
-  const mainNavLinks = navbarTree.filter((item: any) => 
+  const mainNavLinks = navbarTree.filter((item: any) =>
     !topBarTitles.includes(item.title) && item.title !== 'Highlights'
   ).sort((a: any, b: any) => {
     const idxA = mainNavOrder.indexOf(a.title);
@@ -66,12 +66,12 @@ export default function Header() {
     if (!url) return '#';
     if (objectId === '30') return '/contact-us';
     if (objectId === '140' || objectId === '144') return '#';
-    
+
     // Check if external link
     if (url.startsWith('http') && !url.includes('localhost/drrzwc.in') && !url.includes('drrzwc.in')) {
       return url;
     }
-    
+
     let clean = url.replace('http://localhost/drrzwc.in', '').replace('https://drrzwc.in', '');
     if (clean === '') clean = '/';
     if (clean.endsWith('/') && clean.length > 1) {
@@ -87,23 +87,23 @@ export default function Header() {
 
   // Desktop Submenu component (recursive)
   const DesktopSubmenu = ({ items, depth = 1 }: { items: MenuItem[]; depth?: number }) => {
-    const ulVisibilityClass = 
+    const ulVisibilityClass =
       depth === 1
         ? 'top-full left-0 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 border-t-2 border-t-[#c5a059] rounded-b-md'
         : depth === 2
-        ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub1:opacity-100 group-hover/sub1:visible group-hover/sub1:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
-        : depth === 3
-        ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub2:opacity-100 group-hover/sub2:visible group-hover/sub2:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
-        : 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub3:opacity-100 group-hover/sub3:visible group-hover/sub3:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md';
+          ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub1:opacity-100 group-hover/sub1:visible group-hover/sub1:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
+          : depth === 3
+            ? 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub2:opacity-100 group-hover/sub2:visible group-hover/sub2:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md'
+            : 'top-0 left-full opacity-0 invisible translate-x-2 group-hover/sub3:opacity-100 group-hover/sub3:visible group-hover/sub3:translate-x-0 border-l-2 border-l-[#c5a059] rounded-r-md';
 
-    const liGroupClass = 
+    const liGroupClass =
       depth === 1
         ? 'relative group/sub1'
         : depth === 2
-        ? 'relative group/sub2'
-        : depth === 3
-        ? 'relative group/sub3'
-        : 'relative group/sub4';
+          ? 'relative group/sub2'
+          : depth === 3
+            ? 'relative group/sub3'
+            : 'relative group/sub4';
 
     return (
       <ul
@@ -112,11 +112,11 @@ export default function Header() {
         {items.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
           const href = cleanUrl(item.url, item.object_id);
-          
+
           return (
             <li key={item.id} className={liGroupClass}>
               {hasChildren ? (
-                <div className="flex items-center justify-between px-5 py-2.5 text-[11px] font-semibold text-zinc-700 hover:bg-[#0a1d37] hover:text-[#c5a059] hover:pl-6 cursor-pointer transition-all duration-200 border-b border-zinc-100 last:border-0">
+                <div className="flex items-center justify-between px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-[#0a1d37] hover:text-[#c5a059] hover:pl-6 cursor-pointer transition-all duration-200 border-b border-zinc-100 last:border-0">
                   <span>{item.title}</span>
                   <svg className="w-3 h-3 transform -rotate-90" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -125,7 +125,7 @@ export default function Header() {
               ) : (
                 <Link
                   href={href}
-                  className="block px-5 py-2.5 text-[11px] font-semibold text-zinc-700 hover:bg-[#0a1d37] hover:text-[#c5a059] hover:pl-6 transition-all duration-200 border-b border-zinc-100 last:border-0"
+                  className="block px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-[#0a1d37] hover:text-[#c5a059] hover:pl-6 transition-all duration-200 border-b border-zinc-100 last:border-0"
                 >
                   {item.title}
                 </Link>
@@ -168,16 +168,15 @@ export default function Header() {
                     {item.title}
                   </Link>
                 )}
-                
+
                 {hasChildren && (
                   <button
                     onClick={(e) => toggleMobileSubmenu(item.id, e)}
                     className="p-1 text-zinc-500 hover:text-zinc-800"
                   >
                     <svg
-                      className={`w-4 h-4 transform transition-transform duration-200 ${
-                        isExpanded ? 'rotate-180' : ''
-                      }`}
+                      className={`w-4 h-4 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -213,7 +212,7 @@ export default function Header() {
                 <li key={item.id} className="pl-3 md:pl-4 first:pl-0">
                   <Link
                     href={href}
-                    className="text-[10px] md:text-[11px] font-bold text-zinc-300 hover:text-[#c5a059] uppercase tracking-wider transition-colors duration-150 font-heading"
+                    className="text-[10px] md:text-sm font-semibold text-zinc-300 hover:text-[#c5a059] tracking-wide transition-colors duration-150 font-heading"
                   >
                     {item.title}
                   </Link>
@@ -238,19 +237,19 @@ export default function Header() {
                 className="h-[75px] md:h-[95px] w-auto object-contain relative z-10"
               />
             </div>
-            
+
             {/* Text Content */}
             <div className="flex flex-col text-center md:text-left gap-1 md:gap-1.5">
               {/* Campus Title */}
               <div className="text-[#c5a059] font-heading font-bold text-[10px] md:text-xs uppercase tracking-[0.25em] leading-none transition-colors duration-300 group-hover:text-[#0a1d37]">
                 Dr. Rafiq Zakaria Campus
               </div>
-              
+
               {/* College Title */}
-              <h1 className="text-[#0a1d37] font-serif font-extrabold text-[17px] sm:text-xl md:text-2xl lg:text-3xl leading-tight transition-all duration-300">
+              <h1 className="text-[#0a1d37] font-serif font-extrabold text-[17px] sm:text-xl md:text-2xl lg:text-3xl leading-normal transition-all duration-300">
                 Dr. Rafiq Zakaria College for Women
               </h1>
-              
+
               {/* Sub-titles / Certifications */}
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2 sm:gap-3 text-zinc-500 font-sans text-[9px] md:text-[11px] font-semibold uppercase tracking-wider mt-0.5">
                 <span className="bg-[#0a1d37]/5 px-2.5 py-0.5 rounded border border-[#0a1d37]/10 text-[#0a1d37] transition-all duration-300 group-hover:bg-[#0a1d37] group-hover:text-[#c5a059]">
@@ -269,7 +268,7 @@ export default function Header() {
       {/* Navigation Bar */}
       <nav className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 relative z-50 shadow-md">
         <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between md:justify-start">
-          
+
           {/* Mobile hamburger menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -283,7 +282,7 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
-            <span className="text-sm font-bold tracking-wider font-heading">MENU</span>
+            <span className="text-sm font-semibold tracking-wider font-heading">Menu</span>
           </button>
 
           {/* Desktop Navigation */}
@@ -291,11 +290,11 @@ export default function Header() {
             {mainNavLinks.map((item: any) => {
               const hasChildren = item.children && item.children.length > 0;
               const href = cleanUrl(item.url, item.object_id);
-              
+
               return (
                 <li key={item.id} className="relative group">
                   {hasChildren ? (
-                    <div className="flex items-center space-x-1.5 px-5 py-4 text-[11px] font-bold text-white uppercase tracking-widest hover:bg-[#0f2b46] hover:text-[#c5a059] border-t-4 border-transparent hover:border-[#c5a059] cursor-pointer transition-all duration-200 font-heading">
+                    <div className="flex items-center space-x-1.5 px-4.5 py-4 text-base font-semibold text-white tracking-wide hover:bg-[#0f2b46] hover:text-[#c5a059] border-t-4 border-transparent hover:border-[#c5a059] cursor-pointer transition-all duration-200 font-heading">
                       <span>{item.title}</span>
                       <svg className="w-3 h-3 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M5.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -304,12 +303,12 @@ export default function Header() {
                   ) : (
                     <Link
                       href={href}
-                      className="block px-5 py-4 text-[11px] font-bold text-white uppercase tracking-widest hover:bg-[#0f2b46] hover:text-[#c5a059] border-t-4 border-transparent hover:border-[#c5a059] transition-all duration-200 font-heading"
+                      className="block px-4.5 py-4 text-base font-semibold text-white tracking-wide hover:bg-[#0f2b46] hover:text-[#c5a059] border-t-4 border-transparent hover:border-[#c5a059] transition-all duration-200 font-heading"
                     >
                       {item.title}
                     </Link>
                   )}
-                  
+
                   {hasChildren && item.children && (
                     <DesktopSubmenu items={item.children} />
                   )}
@@ -334,7 +333,7 @@ export default function Header() {
                       {hasChildren ? (
                         <button
                           onClick={(e) => toggleMobileSubmenu(item.id, e)}
-                          className="flex-1 text-left text-sm font-bold text-zinc-800 uppercase tracking-widest hover:text-[#c5a059] font-heading"
+                          className="flex-1 text-left text-sm font-semibold text-zinc-800 tracking-wide hover:text-[#c5a059] font-heading"
                         >
                           {item.title}
                         </button>
@@ -342,7 +341,7 @@ export default function Header() {
                         <Link
                           href={href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex-1 text-sm font-bold text-zinc-800 uppercase tracking-widest hover:text-[#c5a059] font-heading"
+                          className="flex-1 text-sm font-semibold text-zinc-800 tracking-wide hover:text-[#c5a059] font-heading"
                         >
                           {item.title}
                         </Link>
@@ -354,9 +353,8 @@ export default function Header() {
                           className="p-1 text-zinc-500 hover:text-[#c5a059]"
                         >
                           <svg
-                            className={`w-5 h-5 transform transition-transform duration-200 ${
-                              isExpanded ? 'rotate-180' : ''
-                            }`}
+                            className={`w-5 h-5 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''
+                              }`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"

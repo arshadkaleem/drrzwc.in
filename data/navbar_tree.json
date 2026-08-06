@@ -81,7 +81,7 @@
         "children": [
           {
             "id": 1521,
-            "title": "11th Arts,Science",
+            "title": "11th Arts & Science",
             "url": "http://localhost/drrzwc.in/11th-artsscience/",
             "parent": "155",
             "object_id": "1516",
@@ -90,7 +90,7 @@
           },
           {
             "id": 1520,
-            "title": "12th Arts,Science",
+            "title": "12th Arts & Science",
             "url": "http://localhost/drrzwc.in/12th-artsscience/",
             "parent": "155",
             "object_id": "1518",
@@ -174,7 +174,7 @@
             "children": [
               {
                 "id": 1522,
-                "title": "M.sc. Chemistry",
+                "title": "M.Sc. Chemistry",
                 "url": "http://localhost/drrzwc.in/m-sc-chemistry/",
                 "parent": "281",
                 "object_id": "1507",
@@ -185,7 +185,7 @@
           },
           {
             "id": 1527,
-            "title": "ARTS",
+            "title": "Arts",
             "url": "http://localhost/drrzwc.in/arts1/",
             "parent": "280",
             "object_id": "1525",
@@ -278,7 +278,7 @@
           },
           {
             "id": 348,
-            "title": "Home science",
+            "title": "Home Science",
             "url": "http://localhost/drrzwc.in/home-science/",
             "parent": "149",
             "object_id": "331",
@@ -390,7 +390,7 @@
       },
       {
         "id": 88,
-        "title": "Scholarship &#038; Goi",
+        "title": "Scholarship & GOI",
         "url": "http://localhost/drrzwc.in/scholarship-goi/",
         "parent": "11",
         "object_id": "86",
@@ -408,7 +408,7 @@
       },
       {
         "id": 1551,
-        "title": "VENDING MACHINE",
+        "title": "Vending Machine",
         "url": "http://localhost/drrzwc.in/vending-machine/",
         "parent": "11",
         "object_id": "1549",
@@ -417,7 +417,7 @@
       },
       {
         "id": 1552,
-        "title": "WI FI",
+        "title": "Wi-Fi",
         "url": "http://localhost/drrzwc.in/wi-fi/",
         "parent": "11",
         "object_id": "1547",
@@ -426,7 +426,7 @@
       },
       {
         "id": 1554,
-        "title": "DEPARTMENTAL LIBRARY",
+        "title": "Departmental Library",
         "url": "http://localhost/drrzwc.in/departmental-library/",
         "parent": "11",
         "object_id": "1543",
@@ -563,7 +563,7 @@
           },
           {
             "id": 2134,
-            "title": "Naac Criteria 1",
+            "title": "NAAC Criteria 1",
             "url": "http://localhost/drrzwc.in/naac-criteria-1/",
             "parent": "117",
             "object_id": "2132",
@@ -572,7 +572,7 @@
           },
           {
             "id": 2025,
-            "title": "Naac Criteria 2",
+            "title": "NAAC Criteria 2",
             "url": "http://localhost/drrzwc.in/naac-criteria-2/",
             "parent": "117",
             "object_id": "2023",
@@ -590,7 +590,7 @@
           },
           {
             "id": 2207,
-            "title": "Naac Criteria 4",
+            "title": "NAAC Criteria 4",
             "url": "http://localhost/drrzwc.in/naac-criteria-4/",
             "parent": "117",
             "object_id": "2205",
@@ -599,7 +599,7 @@
           },
           {
             "id": 1485,
-            "title": "Naac Criteria 5",
+            "title": "NAAC Criteria 5",
             "url": "http://localhost/drrzwc.in/aqar/new-naac/",
             "parent": "117",
             "object_id": "1452",
@@ -608,7 +608,7 @@
           },
           {
             "id": 2075,
-            "title": "Naac Criteria 6",
+            "title": "NAAC Criteria 6",
             "url": "http://localhost/drrzwc.in/naac-criteria-6/",
             "parent": "117",
             "object_id": "2073",
@@ -617,7 +617,7 @@
           },
           {
             "id": 2218,
-            "title": "Naac Criteria 7",
+            "title": "NAAC Criteria 7",
             "url": "http://localhost/drrzwc.in/naac-criteria-7/",
             "parent": "117",
             "object_id": "2216",
@@ -772,7 +772,7 @@
       },
       {
         "id": 2004,
-        "title": "Time table Dr.RZCW",
+        "title": "Time Table Dr.RZCW",
         "url": "http://localhost/drrzwc.in/time-table-dr-rzcw/",
         "parent": "14",
         "object_id": "1999",
@@ -781,7 +781,7 @@
       },
       {
         "id": 2003,
-        "title": "University Academic calendar",
+        "title": "University Academic Calendar",
         "url": "http://localhost/drrzwc.in/university-academic-calendar/",
         "parent": "14",
         "object_id": "2001",
@@ -792,7 +792,7 @@
   },
   {
     "id": 1557,
-    "title": "STUDENTS CORNER",
+    "title": "Students Corner",
     "url": "http://localhost/drrzwc.in/students-corner/",
     "parent": "0",
     "object_id": "1555",
@@ -800,7 +800,7 @@
     "children": [
       {
         "id": 1575,
-        "title": "CARRIER GUIDANCE",
+        "title": "Career Guidance",
         "url": "http://localhost/drrzwc.in/carrier-guidance/",
         "parent": "1557",
         "object_id": "1573",
@@ -827,7 +827,7 @@
       },
       {
         "id": 1560,
-        "title": "PSYCHOLOGICAL COUNSELLING",
+        "title": "Psychological Counselling",
         "url": "http://localhost/drrzwc.in/psychological-counselling/",
         "parent": "1557",
         "object_id": "1558",
@@ -836,7 +836,7 @@
       },
       {
         "id": 1563,
-        "title": "INTERNAL COMPLAINT CELL",
+        "title": "Internal Complaint Cell",
         "url": "http://localhost/drrzwc.in/internal-complaint-cell/",
         "parent": "1557",
         "object_id": "1561",
@@ -854,7 +854,7 @@
       },
       {
         "id": 1812,
-        "title": "Advance learners and Slow learners",
+        "title": "Advanced Learners & Slow Learners",
         "url": "http://localhost/drrzwc.in/advance-learners-and-slow-learners/",
         "parent": "1557",
         "object_id": "1805",
@@ -863,7 +863,7 @@
       },
       {
         "id": 2062,
-        "title": "Net Set qualified students",
+        "title": "NET / SET Qualified Students",
         "url": "http://localhost/drrzwc.in/net-set-qualified-students/",
         "parent": "1557",
         "object_id": "2056",
@@ -910,7 +910,7 @@
   },
   {
     "id": 1920,
-    "title": "Best practices",
+    "title": "Best Practices",
     "url": "http://localhost/drrzwc.in/best-practices/",
     "parent": "0",
     "object_id": "1652",
