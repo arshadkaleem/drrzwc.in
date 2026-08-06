@@ -201,7 +201,7 @@ export default function Header() {
     <header className="w-full flex flex-col bg-white shadow-sm font-sans">
       {/* Top Utility Bar (Utility links split to keep primary navbar single-lined) */}
       <div className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 py-2">
-        <div className="max-w-[1200px] mx-auto px-4 flex justify-between items-center text-white">
+        <div className="mx-auto px-4 md:px-12 flex justify-between items-center text-white">
           <div className="text-[10px] md:text-xs text-zinc-400 font-bold tracking-widest font-heading uppercase select-none">
             Affiliated to Dr. BAMU, Aurangabad
           </div>
@@ -225,7 +225,7 @@ export default function Header() {
 
       {/* Logo Banner */}
       <div className="w-full bg-gradient-to-r from-[#0a1d37]/[0.02] via-[#c5a059]/[0.08] to-[#0a1d37]/[0.02] border-t-0 py-4 md:py-6 border-b border-zinc-100/80">
-        <div className="max-w-[1200px] mx-auto px-4">
+        <div className="mx-auto px-4 md:px-12">
           <Link href="/" className="flex flex-col md:flex-row items-center gap-4 md:gap-6 group text-decoration-none select-none">
             {/* Logo Wrapper */}
             <div className="flex-shrink-0 relative transition-all duration-500 ease-out group-hover:scale-105 group-hover:rotate-1">
@@ -267,7 +267,7 @@ export default function Header() {
 
       {/* Navigation Bar */}
       <nav className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 relative z-50 shadow-md">
-        <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between md:justify-start">
+        <div className="mx-auto px-4 md:px-12 flex items-center justify-between md:justify-start">
 
           {/* Mobile hamburger menu toggle */}
           <button
