@@ -338,7 +338,7 @@
 }
 
 /* Style raw image anchors inside content to look like premium gallery grid cards */
-.leftside a:has(img) {
+.leftside a:has(img), .leftside a:has(video) {
   display: inline-block;
   text-decoration: none !important;
   margin: 10px;
@@ -351,13 +351,13 @@
   box-sizing: border-box;
 }
 
-.leftside a:has(img):hover {
+.leftside a:has(img):hover, .leftside a:has(video):hover {
   transform: translateY(-4px);
   border-color: rgba(197, 160, 89, 0.4);
   box-shadow: 0 10px 25px rgba(197, 160, 89, 0.15);
 }
 
-.leftside a img {
+.leftside a img, .leftside a video {
   display: block;
   max-width: 100%;
   height: auto;
@@ -365,7 +365,7 @@
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.leftside a:hover img {
+.leftside a:hover img, .leftside a:hover video {
   transform: scale(1.04);
 }
 

@@ -20,6 +20,7 @@ interface GalleryImage {
   fullUrl: string;
   thumbnailUrl: string;
   title: string;
+  isVideo?: boolean;
 }
 
 // Extract gallery items from WordPress HTML content (used for dedicated gallery page)
@@ -245,30 +246,31 @@ export default function InnerPage({ page }: InnerPageProps) {
 
     if (anchor) {
       const href = anchor.getAttribute('href');
-      // Detect image links (excluding PDFs)
-      if (href && href.match(/\.(jpeg|jpg|png|gif|webp)$/i)) {
+      // Detect image and video links (excluding PDFs)
+      if (href && href.match(/\.(jpeg|jpg|png|gif|webp|mp4|webm|ogg)$/i)) {
         e.preventDefault();
 
-        // Find all image anchors inside this container to build the lightbox list dynamically
+        // Find all image/video anchors inside this container to build the lightbox list dynamically
         const container = e.currentTarget;
         const allAnchors = Array.from(container.querySelectorAll('a')).filter(a => {
           const h = a.getAttribute('href');
-          return h && h.match(/\.(jpeg|jpg|png|gif|webp)$/i);
+          return h && h.match(/\.(jpeg|jpg|png|gif|webp|mp4|webm|ogg)$/i);
         });
 
         const imagesList = allAnchors.map(a => {
           const fullUrl = (a.getAttribute('href') || '')
             .replace('https://drrzwc.in', '')
             .replace('http://localhost/drrzwc.in', '');
-          const img = a.querySelector('img');
+          const isVideo = !!fullUrl.match(/\.(mp4|webm|ogg)$/i);
+          const img = a.querySelector('img, video');
           const thumbnailUrl = img
             ? (img.getAttribute('src') || '').replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '')
             : fullUrl;
           const title = img
-            ? img.getAttribute('alt') || img.getAttribute('title') || 'Gallery Photo'
-            : 'Gallery Photo';
+            ? img.getAttribute('alt') || img.getAttribute('title') || (isVideo ? 'Gallery Video' : 'Gallery Photo')
+            : (isVideo ? 'Gallery Video' : 'Gallery Photo');
 
-          return { fullUrl, thumbnailUrl, title };
+          return { fullUrl, thumbnailUrl, title, isVideo };
         });
 
         const clickedIdx = allAnchors.indexOf(anchor);
@@ -720,16 +722,28 @@ export default function InnerPage({ page }: InnerPageProps) {
             <i className="fa fa-chevron-right" aria-hidden="true"></i>
           </button>
 
-          {/* Image Canvas Frame */}
+          {/* Image/Video Canvas Frame */}
           <div className="w-[90%] max-w-[1000px] max-h-[75vh] flex items-center justify-center relative animate-[zoomIn_0.3s_cubic-bezier(0.16,1,0.3,1)]">
-            <img
-              src={currentLightboxList[lightboxIndex].fullUrl}
-              alt={currentLightboxList[lightboxIndex].title}
-              className="max-w-full max-h-[75vh] object-contain rounded-md shadow-2xl transition-all duration-300"
-              onError={(e) => {
-                e.currentTarget.src = `https://drrzwc.in${currentLightboxList[lightboxIndex].fullUrl}`;
-              }}
-            />
+            {currentLightboxList[lightboxIndex].isVideo ? (
+              <video
+                src={currentLightboxList[lightboxIndex].fullUrl}
+                controls
+                autoPlay
+                className="max-w-full max-h-[75vh] object-contain rounded-md shadow-2xl"
+                onError={(e) => {
+                  e.currentTarget.src = `https://drrzwc.in${currentLightboxList[lightboxIndex].fullUrl}`;
+                }}
+              />
+            ) : (
+              <img
+                src={currentLightboxList[lightboxIndex].fullUrl}
+                alt={currentLightboxList[lightboxIndex].title}
+                className="max-w-full max-h-[75vh] object-contain rounded-md shadow-2xl transition-all duration-300"
+                onError={(e) => {
+                  e.currentTarget.src = `https://drrzwc.in${currentLightboxList[lightboxIndex].fullUrl}`;
+                }}
+              />
+            )}
           </div>
 
           {/* Meta & Counter Indicators */}
