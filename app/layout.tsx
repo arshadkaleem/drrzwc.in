@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, Inter, Playfair_Display } from "next/font/google";
+import { Outfit, Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -10,8 +10,8 @@ const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
 });
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${outfit.variable} ${plusJakarta.variable} ${playfair.variable} h-full antialiased`}
     >
       <head>
         <link

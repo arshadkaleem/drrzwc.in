@@ -8,7 +8,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter), Arial, sans-serif;
+  --font-sans: var(--font-plus-jakarta), Arial, sans-serif;
   --font-heading: var(--font-outfit), sans-serif;
   --font-serif: var(--font-playfair), Georgia, serif;
 }
@@ -20,15 +20,22 @@
   }
 }
 
-body {
-  background: #faf9f6;
-  color: #1c1c1e;
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
-}
+@layer base {
+  body {
+    background: #faf9f6;
+    color: #1c1c1e;
+    font-family: var(--font-plus-jakarta), Arial, Helvetica, sans-serif;
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-outfit), sans-serif;
-  letter-spacing: -0.01em;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-outfit), sans-serif;
+    letter-spacing: -0.01em;
+  }
 }
 
 /* WordPress Theme Customizations */
@@ -77,7 +84,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .double-line-bottom-centered:after {
-  background: #c5a059;	
+  background: #c5a059;
   border-radius: 8px;
   bottom: 0;
   content: "";
@@ -90,7 +97,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .double-line-bottom-centered:before {
-  background: #c5a059;	
+  background: #c5a059;
   border-radius: 8px;
   bottom: 0;
   content: "";
@@ -127,13 +134,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes marquee-scroll-horizontal {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 @keyframes marqueeVertical {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(0, -50%, 0); }
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
 }
 
 /* WordPress Gallery */
@@ -256,7 +273,8 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.leftside th, .leftside td {
+.leftside th,
+.leftside td {
   padding: 12px 16px;
   text-align: left;
 }
@@ -320,7 +338,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Style raw image anchors inside content to look like premium gallery grid cards */
-.leftside a:has(img) {
+.leftside a:has(img), .leftside a:has(video) {
   display: inline-block;
   text-decoration: none !important;
   margin: 10px;
@@ -333,13 +351,13 @@ h1, h2, h3, h4, h5, h6 {
   box-sizing: border-box;
 }
 
-.leftside a:has(img):hover {
+.leftside a:has(img):hover, .leftside a:has(video):hover {
   transform: translateY(-4px);
   border-color: rgba(197, 160, 89, 0.4);
   box-shadow: 0 10px 25px rgba(197, 160, 89, 0.15);
 }
 
-.leftside a img {
+.leftside a img, .leftside a video {
   display: block;
   max-width: 100%;
   height: auto;
@@ -347,7 +365,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.leftside a:hover img {
+.leftside a:hover img, .leftside a:hover video {
   transform: scale(1.04);
 }
 
@@ -356,10 +374,8 @@ h1, h2, h3, h4, h5, h6 {
     width: calc(100% - 20px);
     margin: 10px;
   }
+
   .leftside a img {
     width: 100%;
   }
 }
-
-
-
