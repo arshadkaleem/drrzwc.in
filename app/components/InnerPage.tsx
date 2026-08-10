@@ -121,7 +121,21 @@ export default function InnerPage({ page }: InnerPageProps) {
 
   const isContactPage = page.slug === 'contact-us' || page.id === 30;
   const isGalleryPage = page.slug === 'gallery' || page.id === 52;
-  const isTabbedPage = !isContactPage && !isGalleryPage && page.content.includes('\t\t\t\t\t\t\t\t\t');
+  const isTabbedPage = !isContactPage && !isGalleryPage && (() => {
+    if (!page.content.includes('\t\t\t\t\t\t\t\t\t')) return false;
+    const parts = page.content.split('\t\t\t\t\t\t\t\t\t');
+    if (parts.length < 3) return false;
+    const firstRawHeader = parts[1] || '';
+    const firstCleanHeader = firstRawHeader.replace(/\r?\n/g, '').replace(/<[^>]+>/g, '').trim();
+    if (!firstCleanHeader) return false;
+    for (let i = 2; i < parts.length; i++) {
+      const cleanPart = parts[i].replace(/\r?\n/g, '').replace(/<[^>]+>/g, '').trim();
+      if (cleanPart.startsWith(firstCleanHeader)) {
+        return true;
+      }
+    }
+    return false;
+  })();
   const notifications = data.home_fields.notification || [];
 
   // Parse tabbed page content dynamically
