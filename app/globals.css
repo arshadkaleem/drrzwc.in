@@ -156,30 +156,76 @@
 /* WordPress Gallery */
 #gallery-1 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
   margin: 24px 0;
   width: 100%;
   float: none !important;
 }
 
-#gallery-1 .gallery-item {
+@media (min-width: 768px) {
+  #gallery-1 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+#gallery-sports {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin: 24px 0;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #gallery-sports {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+#gallery-1 .gallery-item,
+#gallery-sports .gallery-item {
   text-align: center;
   width: 100% !important;
   float: none !important;
 }
 
-#gallery-1 img {
+#gallery-1 img,
+#gallery-1 video,
+.leftside .gallery-item img,
+.leftside .gallery-item video {
   border: 1px solid rgba(197, 160, 89, 0.2);
   border-radius: 6px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   width: 100% !important;
-  height: auto;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-#gallery-1 img:hover {
+#gallery-1 img:hover,
+#gallery-1 video:hover,
+.leftside .gallery-item img:hover,
+.leftside .gallery-item video:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: #c5a059;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+#gallery-sports img,
+#gallery-sports video {
+  border: 1px solid rgba(197, 160, 89, 0.2);
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: contain;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+#gallery-sports img:hover,
+#gallery-sports video:hover {
   transform: translateY(-4px) scale(1.02);
   border-color: #c5a059;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -315,7 +361,7 @@
   margin-top: 10px;
   text-align: center;
   width: 25%;
-  padding: 8px;
+  padding: 2.5px;
   box-sizing: border-box;
 }
 

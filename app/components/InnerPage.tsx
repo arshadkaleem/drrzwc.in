@@ -86,6 +86,9 @@ export default function InnerPage({ page }: InnerPageProps) {
     if (!html) return '';
     let cleaned = html;
 
+    // Strip inline stylesheet blocks to prevent them from overriding global styling rules
+    cleaned = cleaned.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+
     // 1. Replace WordPress Admin AJAX PDF viewer with native direct PDF links
     cleaned = cleaned.replace(
       /iframe[^>]*src=["'](?:https?:\/\/drrzwc\.in|http:\/\/localhost\/drrzwc\.in)?\/wp-admin\/admin-ajax\.php\?action=get_viewer&amp;?file=([^"'\s#]+)(?:#[^"'\s]*)?["']/gi,
@@ -102,6 +105,19 @@ export default function InnerPage({ page }: InnerPageProps) {
     cleaned = cleaned.replace(/https?:\/\/drrzwc\.in/gi, '');
     cleaned = cleaned.replace(/http:\/\/localhost\/drrzwc\.in/gi, '');
 
+    // Replace non-image href in anchor links enclosing an img tag with the img src itself (e.g. for WordPress attachment pages)
+    cleaned = cleaned.replace(
+      /(<a\s+[^>]*href=["'])([^"']*)(["'][^>]*>\s*<img\s+[^>]*src=["'])([^"']*)(["'])/gi,
+      (match, startHref, href, mid, src, endSrc) => {
+        const isHrefImage = /\.(?:jpe?g|png|gif|webp|bmp)/i.test(href);
+        const isSrcImage = /\.(?:jpe?g|png|gif|webp|bmp)/i.test(src);
+        if (!isHrefImage && isSrcImage) {
+          return startHref + src + mid + src + endSrc;
+        }
+        return match;
+      }
+    );
+
     // Replace thumbnail src with parent anchor href for image links
     cleaned = cleaned.replace(
       /(<a\s+[^>]*href=["']([^"']+\.(?:jpe?g|png|gif|webp|bmp))["'][^>]*>\s*<img\s+[^>]*src=["'])([^"']*)(["'])/gi,
@@ -109,6 +125,9 @@ export default function InnerPage({ page }: InnerPageProps) {
         return prefix + href + quote;
       }
     );
+
+    // Remove WordPress clear-both breaks inside galleries to allow grid/float columns to align correctly
+    cleaned = cleaned.replace(/<br\s+style=['"]clear:\s*both;?['"]\s*\/?>/gi, '');
 
     // Normalize uploads directory urls
     cleaned = cleaned.replace(/\/wp-content\/uploads/gi, '/wp-content/uploads');
