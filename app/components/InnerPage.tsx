@@ -42,10 +42,8 @@ function extractGalleryImages(html: string): GalleryImage[] {
 
     if (hrefMatch && srcMatch) {
       let fullUrl = hrefMatch[1];
-      let thumbnailUrl = srcMatch[1];
-
       fullUrl = fullUrl.replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '');
-      thumbnailUrl = thumbnailUrl.replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '');
+      const thumbnailUrl = fullUrl; // Use the same full image as the thumbnail
 
       const title = titleMatch ? titleMatch[1] : (altMatch ? altMatch[1] : '');
 
@@ -63,10 +61,8 @@ function extractGalleryImages(html: string): GalleryImage[] {
     let fallbackMatch;
     while ((fallbackMatch = imgLinkRegex.exec(html)) !== null) {
       let fullUrl = fallbackMatch[1];
-      let thumbnailUrl = fallbackMatch[2];
-
       fullUrl = fullUrl.replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '');
-      thumbnailUrl = thumbnailUrl.replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '');
+      const thumbnailUrl = fullUrl; // Use the same full image as the thumbnail
 
       images.push({
         fullUrl,
@@ -105,6 +101,14 @@ export default function InnerPage({ page }: InnerPageProps) {
     // 2. Replace absolute site domains with relative routes
     cleaned = cleaned.replace(/https?:\/\/drrzwc\.in/gi, '');
     cleaned = cleaned.replace(/http:\/\/localhost\/drrzwc\.in/gi, '');
+
+    // Replace thumbnail src with parent anchor href for image links
+    cleaned = cleaned.replace(
+      /(<a\s+[^>]*href=["']([^"']+\.(?:jpe?g|png|gif|webp|bmp))["'][^>]*>\s*<img\s+[^>]*src=["'])([^"']*)(["'])/gi,
+      (match, prefix, href, src, quote) => {
+        return prefix + href + quote;
+      }
+    );
 
     // Normalize uploads directory urls
     cleaned = cleaned.replace(/\/wp-content\/uploads/gi, '/wp-content/uploads');
@@ -277,9 +281,7 @@ export default function InnerPage({ page }: InnerPageProps) {
             .replace('http://localhost/drrzwc.in', '');
           const isVideo = !!fullUrl.match(/\.(mp4|webm|ogg)$/i);
           const img = a.querySelector('img, video');
-          const thumbnailUrl = img
-            ? (img.getAttribute('src') || '').replace('https://drrzwc.in', '').replace('http://localhost/drrzwc.in', '')
-            : fullUrl;
+          const thumbnailUrl = fullUrl; // Use original image for thumbnail
           const title = img
             ? img.getAttribute('alt') || img.getAttribute('title') || (isVideo ? 'Gallery Video' : 'Gallery Photo')
             : (isVideo ? 'Gallery Video' : 'Gallery Photo');
