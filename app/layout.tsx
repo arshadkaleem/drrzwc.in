@@ -26,6 +26,11 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Dr. Rafiq Zakaria College for Women",
   description: "Navkhanda, Jubilee Park, Aurangabad. Affiliated to Dr. Babasaheb Ambedkar Marathwada University.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -39,6 +44,7 @@ export default function RootLayout({
       className={`${outfit.variable} ${plusJakarta.variable} ${playfair.variable} h-full antialiased`}
     >
       <head>
+        <link rel="icon" href="/logo.png" type="image/png" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
