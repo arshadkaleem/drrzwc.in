@@ -1250,7 +1250,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                         )}
                       </div>
                     </div>
-                  ) : matchedPdfGallery ? (
+                  ) : (page.slug in PDF_GALLERY_MAPPING) ? (
                     <div className="flex flex-col space-y-6">
 
                       {/* Premium PDF Documents Section */}
