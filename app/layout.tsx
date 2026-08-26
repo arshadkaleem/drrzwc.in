@@ -3,6 +3,7 @@ import { Outfit, Plus_Jakarta_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Providers from "./components/Providers";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -44,11 +45,13 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#faf9f6] text-zinc-800 font-sans">
-        <Header />
-        <main className="flex-1 flex flex-col w-full">
-          {children}
-        </main>
-        <Footer />
+        <Providers>
+          <Header />
+          <main className="flex-1 flex flex-col w-full">
+            {children}
+          </main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

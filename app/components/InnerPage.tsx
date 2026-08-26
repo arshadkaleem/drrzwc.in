@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import data from '@/data/extracted_data.json';
+import { useAlbum, getImageUrl, Photo } from '@/hooks/useGallery';
 
 interface PageData {
   id: number;
@@ -75,12 +76,70 @@ function extractGalleryImages(html: string): GalleryImage[] {
   return images;
 }
 
+const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
+  'sports': { id: 60, title: 'Sports' },
+  'home-science': { id: 56, title: 'Home Science' },
+  'physics': { id: 57, title: 'Physics' },
+  'zoology': { id: 58, title: 'Zoology' },
+  'mathematics': { id: 59, title: 'Maths' },
+  'earn-and-learn': { id: 61, title: 'Earn and Learn' }
+};
+
+function splitGalleryContent(html: string): { introHtml: string; hasGallery: boolean } {
+  if (!html) return { introHtml: '', hasGallery: false };
+
+  const styleIdx = html.indexOf('<style type="text/css">');
+  if (styleIdx !== -1 && html.includes('#gallery', styleIdx)) {
+    return { introHtml: html.substring(0, styleIdx).trim(), hasGallery: true };
+  }
+
+  const divIdx = html.search(/<div\s+(?:[^>]*\s+)?id=["']gallery-[-a-zA-Z0-9_]+/i);
+  if (divIdx !== -1) {
+    return { introHtml: html.substring(0, divIdx).trim(), hasGallery: true };
+  }
+
+  const dlIdx = html.indexOf("<dl class='gallery-item'");
+  if (dlIdx !== -1) {
+    return { introHtml: html.substring(0, dlIdx).trim(), hasGallery: true };
+  }
+
+  const dlDoubleIdx = html.indexOf('<dl class="gallery-item"');
+  if (dlDoubleIdx !== -1) {
+    return { introHtml: html.substring(0, dlDoubleIdx).trim(), hasGallery: true };
+  }
+
+  if (html.includes('gallery-item') || html.includes('id="gallery-')) {
+    return { introHtml: html, hasGallery: true };
+  }
+
+  return { introHtml: html, hasGallery: false };
+}
+
 export default function InnerPage({ page }: InnerPageProps) {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxImages, setLightboxImages] = useState<GalleryImage[]>([]);
   const [activeTab, setActiveTab] = useState<string>('');
+
+  const albumConfig = ALBUM_MAPPING[page.slug];
+  const albumId = albumConfig ? albumConfig.id : 0;
+  const { data: albumData, isLoading: isAlbumLoading, error: albumError } = useAlbum(albumId);
+
+  const formatPhotoTitle = (title: string | null) => {
+    if (!title) return 'Gallery Photo';
+    if (/\.(jpe?g|png|gif|webp|bmp)/i.test(title) || /^[a-f0-9-]{36}/i.test(title)) {
+      return 'Gallery Photo';
+    }
+    return title;
+  };
+
+  const galleryPhotos: GalleryImage[] = albumData?.photos?.map((photo: Photo) => ({
+    fullUrl: getImageUrl(photo.filePath),
+    thumbnailUrl: getImageUrl(photo.thumbnailPath || photo.filePath),
+    title: formatPhotoTitle(photo.title),
+    isVideo: false
+  })) || [];
 
   const cleanHtmlContent = (html: string) => {
     if (!html) return '';
@@ -627,22 +686,160 @@ export default function InnerPage({ page }: InnerPageProps) {
                     )}
 
                     {/* Active Tab Content Area */}
-                    {activeTab && tabContents[activeTab] && (
+                    {activeTab && (
                       <div
                         key={activeTab} // Setting key forces component replacement and re-triggers fade-in animations on tab switch
-                        onClick={handleContentClick}
                         className="leftside break-words pt-4 animate-[fadeIn_0.3s_ease-out]"
-                        dangerouslySetInnerHTML={{ __html: cleanHtmlContent(tabContents[activeTab]) }}
-                      />
+                      >
+                        {albumConfig && (activeTab === 'Gallery' || activeTab === 'Photo Gallery') ? (
+                          (() => {
+                            const { introHtml: galleryIntroHtml } = splitGalleryContent(tabContents[activeTab] || '');
+                            return (
+                              <>
+                                {galleryIntroHtml && (
+                                  <div
+                                    onClick={handleContentClick}
+                                    dangerouslySetInnerHTML={{ __html: cleanHtmlContent(galleryIntroHtml) }}
+                                  />
+                                )}
+
+                                {isAlbumLoading ? (
+                                  /* Shimmer Loading State */
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+                                    {Array.from({ length: 8 }).map((_, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="aspect-[4/3] w-full bg-zinc-200 animate-pulse rounded-lg"
+                                      />
+                                    ))}
+                                  </div>
+                                ) : albumError ? (
+                                  <div className="text-red-500 font-medium py-4 text-center">
+                                    Failed to load photo gallery. Please try again later.
+                                  </div>
+                                ) : galleryPhotos.length === 0 ? (
+                                  <div className="text-zinc-500 py-4 text-center">
+                                    No photos available in the gallery.
+                                  </div>
+                                ) : (
+                                  /* Dynamic Gallery Grid */
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+                                    {galleryPhotos.map((img, idx) => (
+                                      <div
+                                        key={idx}
+                                        onClick={() => {
+                                          setLightboxImages(galleryPhotos);
+                                          setLightboxIndex(idx);
+                                        }}
+                                        className="group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
+                                      >
+                                        <div className="aspect-[4/3] w-full overflow-hidden relative bg-zinc-100">
+                                          <img
+                                            src={img.thumbnailUrl}
+                                            alt={img.title}
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            onError={(e) => {
+                                              e.currentTarget.src = img.fullUrl;
+                                            }}
+                                          />
+                                          {/* Hover Overlay */}
+                                          <div className="absolute inset-0 bg-[#0a1d37]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                            <span className="bg-white/95 text-[#0a1d37] px-4 py-2.5 rounded-full text-[10px] font-bold font-heading tracking-widest shadow-md transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 uppercase">
+                                              View Image
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })()
+                        ) : tabContents[activeTab] ? (
+                          <div
+                            onClick={handleContentClick}
+                            dangerouslySetInnerHTML={{ __html: cleanHtmlContent(tabContents[activeTab]) }}
+                          />
+                        ) : null}
+                      </div>
                     )}
                   </div>
                 ) : (
                   /* Standard Rich Text Page Content */
-                  <div
-                    onClick={handleContentClick}
-                    className="leftside break-words"
-                    dangerouslySetInnerHTML={{ __html: cleanHtmlContent(page.content) }}
-                  />
+                  albumConfig ? (
+                    (() => {
+                      const { introHtml: pageIntroHtml } = splitGalleryContent(page.content || '');
+                      return (
+                        <div className="flex flex-col">
+                          {pageIntroHtml && (
+                            <div
+                              onClick={handleContentClick}
+                              className="leftside break-words"
+                              dangerouslySetInnerHTML={{ __html: cleanHtmlContent(pageIntroHtml) }}
+                            />
+                          )}
+
+                          {isAlbumLoading ? (
+                            /* Shimmer Loading State */
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                              {Array.from({ length: 8 }).map((_, idx) => (
+                                <div
+                                  key={idx}
+                                  className="aspect-[4/3] w-full bg-zinc-200 animate-pulse rounded-lg"
+                                />
+                              ))}
+                            </div>
+                          ) : albumError ? (
+                            <div className="text-red-500 font-medium py-4 text-center">
+                              Failed to load gallery. Please try again later.
+                            </div>
+                          ) : galleryPhotos.length === 0 ? (
+                            <div className="text-zinc-500 py-4 text-center">
+                              No photos available in the gallery.
+                            </div>
+                          ) : (
+                            /* Dynamic Gallery Grid */
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                              {galleryPhotos.map((img, idx) => (
+                                <div
+                                  key={idx}
+                                  onClick={() => {
+                                    setLightboxImages(galleryPhotos);
+                                    setLightboxIndex(idx);
+                                  }}
+                                  className="group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
+                                >
+                                  <div className="aspect-[4/3] w-full overflow-hidden relative bg-zinc-100">
+                                    <img
+                                      src={img.thumbnailUrl}
+                                      alt={img.title}
+                                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                      onError={(e) => {
+                                        e.currentTarget.src = img.fullUrl;
+                                      }}
+                                    />
+                                    {/* Hover Overlay */}
+                                    <div className="absolute inset-0 bg-[#0a1d37]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                      <span className="bg-white/95 text-[#0a1d37] px-4 py-2.5 rounded-full text-[10px] font-bold font-heading tracking-widest shadow-md transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 uppercase">
+                                        View Image
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div
+                      onClick={handleContentClick}
+                      className="leftside break-words"
+                      dangerouslySetInnerHTML={{ __html: cleanHtmlContent(page.content) }}
+                    />
+                  )
                 )}
 
               </div>
