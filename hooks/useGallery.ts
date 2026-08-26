@@ -31,7 +31,7 @@ export interface Album {
 }
 
 const COLLEGE_ID = process.env.NEXT_PUBLIC_COLLEGE_ID || null;
-const API_BASE_URL = "https://shivatrust-api.mokshasolutions.com"; // Fixed trailing slash from original file logic
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://college-api.mokshasolutions.com"; // Fixed trailing slash from original file logic
 
 export async function fetchAlbums(): Promise<Album[]> {
   if (!COLLEGE_ID) {

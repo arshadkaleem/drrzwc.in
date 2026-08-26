@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 const COLLEGE_ID = process.env.NEXT_PUBLIC_COLLEGE_ID || "";
-const API_BASE_URL = "https://shivatrust-api.mokshasolutions.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://college-api.mokshasolutions.com";
 
 export interface Section {
   sectionId: number;
