@@ -523,17 +523,7 @@
         "parent": "14",
         "object_id": "103",
         "object": "page",
-        "children": [
-          {
-            "id": 1916,
-            "title": "IQAC 2019-20",
-            "url": "http://localhost/drrzwc.in/iqac-2019-20/",
-            "parent": "105",
-            "object_id": "1911",
-            "object": "page",
-            "children": []
-          }
-        ]
+        "children": []
       },
       {
         "id": 2332,

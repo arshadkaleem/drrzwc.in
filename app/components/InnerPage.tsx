@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import data from '@/data/extracted_data.json';
 import { useAlbum, getImageUrl, Photo } from '@/hooks/useGallery';
+import { usePdfGalleries, usePdfGallery, getPdfUrl } from '@/hooks/usePdf';
+import { useTimetable } from '@/hooks/useTimeTable';
 
 interface PageData {
   id: number;
@@ -76,13 +78,32 @@ function extractGalleryImages(html: string): GalleryImage[] {
   return images;
 }
 
+const PDF_GALLERY_MAPPING: Record<string, string> = {
+  'projects': 'projects',
+  'beyond-campus': 'beyond campus',
+  'student-satisfaction-survey': 'student satisfaction survey',
+  'student-centric-activities': 'student centric activities',
+  'redressal': 'redressal',
+  'women-cell': 'women cell',
+  'learning-outcome': 'learning outcome',
+  'advance-learners-and-slow-learners': 'advance learners and slow learners',
+  'curriculum-enrichment': 'curriculum enrichment',
+  'alumni-meet-report': 'alumni',
+  'field-projects': 'field projects',
+  'academic-flexibility': 'academic flexibility',
+  'continuous-internal-evaluation': 'continuous internal evaluation',
+  'academic-calendar': 'academic calendar',
+  'feedback': 'feedback'
+};
+
 const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
   'sports': { id: 60, title: 'Sports' },
   'home-science': { id: 56, title: 'Home Science' },
   'physics': { id: 57, title: 'Physics' },
   'zoology': { id: 58, title: 'Zoology' },
   'mathematics': { id: 59, title: 'Maths' },
-  'earn-and-learn': { id: 61, title: 'Earn and Learn' }
+  'earn-and-learn': { id: 61, title: 'Earn and Learn' },
+  'departmental-library': { id: 62, title: 'Departmental Library' }
 };
 
 function splitGalleryContent(html: string): { introHtml: string; hasGallery: boolean } {
@@ -115,6 +136,20 @@ function splitGalleryContent(html: string): { introHtml: string; hasGallery: boo
   return { introHtml: html, hasGallery: false };
 }
 
+function cleanPdfPageContent(html: string): string {
+  if (!html) return '';
+  // Remove iframes pointing to PDFs
+  let cleaned = html.replace(/<iframe[^>]+src=['"][^'"]+\.pdf['"][^>]*>.*?<\/iframe>/gi, '');
+  // Remove any text saying "Powered By EmbedPress"
+  cleaned = cleaned.replace(/Powered By EmbedPress/gi, '');
+  // Remove anchor tags pointing to PDFs
+  cleaned = cleaned.replace(/<a[^>]+href=['"][^'"]+\.pdf['"][^>]*>.*?<\/a>/gi, '');
+  // Remove empty lists or wrappers that might have been left over
+  cleaned = cleaned.replace(/<ul[^>]*>\s*<\/ul>/gi, '');
+  cleaned = cleaned.replace(/<li[^>]*>\s*<\/li>/gi, '');
+  return cleaned.trim();
+}
+
 export default function InnerPage({ page }: InnerPageProps) {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -126,8 +161,45 @@ export default function InnerPage({ page }: InnerPageProps) {
   const albumId = albumConfig ? albumConfig.id : 0;
   const { data: albumData, isLoading: isAlbumLoading, error: albumError } = useAlbum(albumId);
 
+  // Fetch PDF galleries if the page has PDF docs associated with it
+  const { data: pdfGalleries } = usePdfGalleries();
+  const matchedPdfGallery = pdfGalleries?.find(g => {
+    const titleLower = g.title.toLowerCase().trim();
+    if (titleLower === page.title.toLowerCase().trim()) return true;
+    const mappedTitle = PDF_GALLERY_MAPPING[page.slug];
+    if (mappedTitle && titleLower === mappedTitle) return true;
+    return false;
+  });
+  const matchedGalleryId = matchedPdfGallery?.galleryId;
+
+  // Fetch documents for the matched PDF gallery
+  const { data: pdfGalleryData, isLoading: isPdfLoading } = usePdfGallery(matchedGalleryId || 0);
+  const pdfDocuments = pdfGalleryData?.documents || [];
+
+  // Fetch timetables if on the time table page
+  const isTimetablePage = page.slug === 'time-table-dr-rzcw';
+  const { data: timetables, isLoading: isTimetableLoading } = useTimetable({ enabled: isTimetablePage });
+  const timetableRecords = timetables || [];
+
+  const formatBytes = (bytes: number, decimals = 2) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  };
+
   const formatPhotoTitle = (title: string | null) => {
     if (!title) return 'Gallery Photo';
+    
+    // Custom labels for Departmental Library
+    const lower = title.toLowerCase();
+    if (lower.includes('comp-dept-lib')) return 'Computer Science Department';
+    if (lower.includes('botany-dept-lib')) return 'Botany Department';
+    if (lower.includes('chem-dept-lib')) return 'Chemistry Department';
+    if (lower.includes('zoology-dept-lib')) return 'Zoology Department';
+
     if (/\.(jpe?g|png|gif|webp|bmp)/i.test(title) || /^[a-f0-9-]{36}/i.test(title)) {
       return 'Gallery Photo';
     }
@@ -756,6 +828,235 @@ export default function InnerPage({ page }: InnerPageProps) {
                               </>
                             );
                           })()
+                        ) : page.slug === 'about-iqac' && activeTab === 'About IQAC' ? (
+                          <div className="flex flex-col space-y-8 mt-4">
+                            {/* Coordinator Profile Header Card */}
+                            <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+                              {/* Coordinator Image */}
+                              <div className="relative group flex-shrink-0">
+                                <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#c5a059] to-[#0a1d37] rounded-xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                                <div className="relative w-40 h-44 rounded-lg overflow-hidden border-2 border-white shadow-md bg-zinc-50">
+                                  <img
+                                    src="https://drrzwc.in/wp-content/uploads/2023/02/DrTanmay.jpg"
+                                    alt="Dr. Tanmay Arvind Paithankar"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Coordinator Info */}
+                              <div className="flex-1 text-center md:text-left space-y-3">
+                                <div>
+                                  <span className="bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider">
+                                    IQAC Coordinator
+                                  </span>
+                                </div>
+                                <h3 className="text-xl font-bold font-heading text-[#0a1d37]">
+                                  Dr. Tanmay Arvind Paithankar
+                                </h3>
+                                <p className="text-sm font-semibold text-zinc-600 leading-snug">
+                                  Professor & Head, Department of Political Science
+                                </p>
+                                <div className="text-xs text-zinc-400 font-medium leading-relaxed pt-2 border-t border-zinc-100 flex flex-col space-y-1">
+                                  <p>Dr. Rafiq Zakaria College for Women</p>
+                                  <p>Navkhanda, Jubilee Park, Aurangabad – 431001 (M.S.)</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Info Cards Grid */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                              {/* Card 1: Mechanisms */}
+                              <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-6 flex flex-col">
+                                <div className="flex items-center space-x-3.5 mb-5 border-b border-zinc-100 pb-4">
+                                  <div className="w-10 h-10 rounded-xl bg-[#c5a059]/10 !text-[#c5a059] flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                  </div>
+                                  <h4 className="text-sm font-bold font-heading text-[#0a1d37] uppercase tracking-wider">
+                                    Mechanisms & Procedures
+                                  </h4>
+                                </div>
+                                <ul className="space-y-3.5 text-xs text-zinc-600 flex-1">
+                                  {[
+                                    'Ensuring timely, efficient and progressive performance of academic, administrative and financial tasks.',
+                                    'The relevance and quality of academic and research programmes.',
+                                    'Equitable access to and affordability of academic programmes for various sections of society.',
+                                    'Optimization and integration of modern methods of teaching and learning.',
+                                    'The credibility of evaluation procedures.',
+                                    'Ensuring the adequacy, maintenance and functioning of the support structure and services.',
+                                    'Research sharing and networking with other institutions in India and abroad.'
+                                  ].map((item, idx) => (
+                                    <li key={idx} className="flex items-start space-x-2.5 leading-relaxed">
+                                      <span className="text-[#c5a059] mt-1 font-bold">➔</span>
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Card 2: Functions */}
+                              <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-6 flex flex-col">
+                                <div className="flex items-center space-x-3.5 mb-5 border-b border-zinc-100 pb-4">
+                                  <div className="w-10 h-10 rounded-xl bg-[#c5a059]/10 !text-[#c5a059] flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                    </svg>
+                                  </div>
+                                  <h4 className="text-sm font-bold font-heading text-[#0a1d37] uppercase tracking-wider">
+                                    Functions of IQAC
+                                  </h4>
+                                </div>
+                                <ul className="space-y-3.5 text-xs text-zinc-600 flex-1">
+                                  {[
+                                    'Development and application of quality benchmarks/parameters for academic & administrative activities.',
+                                    'Facilitating a learner-centric environment and faculty maturation for participatory teaching.',
+                                    'Arrangement for feedback response from students, parents, and stakeholders.',
+                                    'Dissemination of information on quality parameters of higher education.',
+                                    'Organization of workshops and seminars on quality-related themes.',
+                                    'Documentation of various programmes leading to quality improvement.',
+                                    'Acting as a nodal agency for coordinating quality-related activities and best practices.',
+                                    'Development of institutional database through MIS to maintain quality.',
+                                    'Development of Quality Culture in the institution.',
+                                    'Preparation of the Annual Quality Assurance Report (AQAR) for NAAC.'
+                                  ].map((item, idx) => (
+                                    <li key={idx} className="flex items-start space-x-2.5 leading-relaxed">
+                                      <span className="text-[#c5a059] mt-1 font-bold">➔</span>
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+
+                              {/* Card 3: Benefits */}
+                              <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-6 flex flex-col">
+                                <div className="flex items-center space-x-3.5 mb-5 border-b border-zinc-100 pb-4">
+                                  <div className="w-10 h-10 rounded-xl bg-[#c5a059]/10 !text-[#c5a059] flex items-center justify-center flex-shrink-0">
+                                    <svg className="w-5.5 h-5.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                                    </svg>
+                                  </div>
+                                  <h4 className="text-sm font-bold font-heading text-[#0a1d37] uppercase tracking-wider">
+                                    Benefits & Outcomes
+                                  </h4>
+                                </div>
+                                <ul className="space-y-3.5 text-xs text-zinc-600 flex-1">
+                                  {[
+                                    'Ensure heightened level of clarity and focus in institutional functioning towards quality enhancement.',
+                                    'Ensure internalization of the quality culture.',
+                                    'Ensure coordination among various activities and institutionalize all good practices.',
+                                    'Provide a sound basis for decision-making to improve institutional functioning.',
+                                    'Act as a dynamic system for quality changes in HEIs.',
+                                    'Build an organized methodology of documentation and internal communication.'
+                                  ].map((item, idx) => (
+                                    <li key={idx} className="flex items-start space-x-2.5 leading-relaxed">
+                                      <span className="text-[#c5a059] mt-1 font-bold">➔</span>
+                                      <span>{item}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+
+                            {/* Diagrams Section */}
+                            <div className="bg-white rounded-2xl border border-zinc-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-6 md:p-8">
+                              <div className="flex flex-col md:flex-row gap-8 justify-start items-start">
+                                <div className="group relative overflow-hidden max-w-lg transition-all duration-300">
+                                  <img
+                                    src="https://drrzwc.in/wp-content/uploads/2023/02/AboutIQACFirst.jpg"
+                                    alt="IQAC Quality Process Flowchart"
+                                    className="w-full h-auto max-h-[300px] object-contain transition-transform duration-500 group-hover:scale-103"
+                                  />
+                                </div>
+                                <div className="group relative overflow-hidden max-w-xs transition-all duration-300">
+                                  <img
+                                    src="https://drrzwc.in/wp-content/uploads/2023/02/AboutIQACSecond-269x300.jpg"
+                                    alt="IQAC Hierarchy Chart"
+                                    className="w-full h-auto max-h-[300px] object-contain transition-transform duration-500 group-hover:scale-103"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : page.slug === 'about-iqac' && activeTab === 'Docs' ? (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4 w-full">
+                            {[
+                              {
+                                year: 'IQAC 2019-20',
+                                docs: [
+                                  {
+                                    title: 'Significant Contributions 2019-20',
+                                    url: '/wp-content/uploads/2023/01/12-Significant-Contributions-2019-20.pdf'
+                                  },
+                                  {
+                                    title: 'Plan of action chalked 2019-20',
+                                    url: '/wp-content/uploads/2023/01/13.-Plan-of-action-chalked-2019-20.pdf'
+                                  }
+                                ]
+                              }
+                            ].map((card, cardIdx) => (
+                              <div key={cardIdx} className="bg-white rounded-xl border border-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col justify-between">
+                                <div>
+                                  {/* Card Header */}
+                                  <div className="bg-[#0a1d37] px-5 py-4 border-b border-zinc-200/20 flex items-center justify-between">
+                                    <h3 className="text-sm font-bold font-heading !text-[#c5a059] uppercase tracking-wider">
+                                      {card.year}
+                                    </h3>
+                                    <span className="bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                                      Documents
+                                    </span>
+                                  </div>
+
+                                  {/* Card Body */}
+                                  <div className="p-3 divide-y divide-zinc-100">
+                                    {card.docs.map((doc, idx) => (
+                                      <a
+                                        key={idx}
+                                        href={doc.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between p-3 rounded-lg hover:bg-zinc-50 transition-all duration-200 group"
+                                      >
+                                        <div className="flex items-center space-x-3">
+                                          {/* PDF Icon */}
+                                          <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center text-red-500 group-hover:bg-red-100 transition-colors flex-shrink-0">
+                                            <svg
+                                              width="18"
+                                              height="18"
+                                              fill="none"
+                                              stroke="currentColor"
+                                              viewBox="0 0 24 24"
+                                              strokeWidth="2"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                              />
+                                            </svg>
+                                          </div>
+                                          <div>
+                                            <p className="text-xs font-semibold text-zinc-700 group-hover:text-[#c5a059] transition-colors leading-snug">
+                                              {doc.title}
+                                            </p>
+                                            <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider mt-0.5">
+                                              PDF Document
+                                            </p>
+                                          </div>
+                                        </div>
+                                        {/* Action Icon */}
+                                        <div className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:border-[#c5a059] group-hover:text-[#c5a059] transition-all flex-shrink-0 ml-2">
+                                          <i className="fa fa-chevron-right text-[10px]" aria-hidden="true"></i>
+                                        </div>
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         ) : tabContents[activeTab] ? (
                           <div
                             onClick={handleContentClick}
@@ -769,7 +1070,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                   /* Standard Rich Text Page Content */
                   albumConfig ? (
                     (() => {
-                      const { introHtml: pageIntroHtml } = splitGalleryContent(page.content || '');
+                      const pageIntroHtml = page.slug === 'departmental-library' ? '' : splitGalleryContent(page.content || '').introHtml;
                       return (
                         <div className="flex flex-col">
                           {pageIntroHtml && (
@@ -800,7 +1101,11 @@ export default function InnerPage({ page }: InnerPageProps) {
                             </div>
                           ) : (
                             /* Dynamic Gallery Grid */
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+                            <div className={
+                              page.slug === 'departmental-library'
+                                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6"
+                                : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6"
+                            }>
                               {galleryPhotos.map((img, idx) => (
                                 <div
                                   key={idx}
@@ -808,9 +1113,17 @@ export default function InnerPage({ page }: InnerPageProps) {
                                     setLightboxImages(galleryPhotos);
                                     setLightboxIndex(idx);
                                   }}
-                                  className="group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
+                                  className={
+                                    page.slug === 'departmental-library'
+                                      ? "group cursor-pointer overflow-hidden rounded-xl border border-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-lg hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-white p-3 flex flex-col justify-between"
+                                      : "group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
+                                  }
                                 >
-                                  <div className="aspect-[4/3] w-full overflow-hidden relative bg-zinc-100">
+                                  <div className={
+                                    page.slug === 'departmental-library'
+                                      ? "aspect-[4/3] w-full overflow-hidden relative rounded-lg bg-zinc-100"
+                                      : "aspect-[4/3] w-full overflow-hidden relative bg-zinc-100"
+                                  }>
                                     <img
                                       src={img.thumbnailUrl}
                                       alt={img.title}
@@ -826,6 +1139,13 @@ export default function InnerPage({ page }: InnerPageProps) {
                                       </span>
                                     </div>
                                   </div>
+                                  {page.slug === 'departmental-library' && (
+                                    <div className="mt-3 px-1">
+                                      <h4 className="text-sm font-bold text-[#0a1d37] group-hover:text-[#c5a059] transition-colors leading-snug">
+                                        {img.title}
+                                      </h4>
+                                    </div>
+                                  )}
                                 </div>
                               ))}
                             </div>
@@ -833,6 +1153,197 @@ export default function InnerPage({ page }: InnerPageProps) {
                         </div>
                       );
                     })()
+                  ) : isTimetablePage ? (
+                    <div className="flex flex-col space-y-6">
+                      {/* Premium Timetable Documents Section */}
+                      <div className="mt-4">
+                        <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
+                          College Timetables
+                        </h3>
+
+                        {isTimetableLoading ? (
+                          /* Shimmer Loading State */
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array.from({ length: 3 }).map((_, idx) => (
+                              <div
+                                key={idx}
+                                className="h-44 bg-zinc-150 animate-pulse rounded-xl border border-zinc-200"
+                              />
+                            ))}
+                          </div>
+                        ) : timetableRecords.length === 0 ? (
+                          <div className="text-zinc-500 py-6 text-center bg-zinc-50 rounded-xl border border-zinc-150">
+                            No timetables available.
+                          </div>
+                        ) : (
+                          /* Premium Timetable Grid */
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {timetableRecords.map((record) => (
+                              <div
+                                key={record.timetableId}
+                                className="bg-white rounded-xl border border-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#c5a059]/40 transition-all duration-300 p-5 flex flex-col justify-between group"
+                              >
+                                <div className="space-y-4">
+                                  {/* Header Info */}
+                                  <div className="flex items-start space-x-4">
+                                    <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
+                                      <svg
+                                        width="20"
+                                        height="20"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="2.2"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                      </svg>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-bold text-zinc-700 leading-snug group-hover:text-[#c5a059] transition-colors line-clamp-2">
+                                        {record.title}
+                                      </h4>
+                                      <div className="text-[10px] text-zinc-400 font-semibold tracking-wider uppercase flex flex-wrap gap-x-2 gap-y-0.5">
+                                        {record.academicYear && <span>{record.academicYear}</span>}
+                                        {record.academicYear && (record.department || record.semester) && <span>•</span>}
+                                        {record.department && <span>{record.department}</span>}
+                                        {record.department && record.semester && <span>•</span>}
+                                        {record.semester && <span>Semester {record.semester}</span>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <a
+                                  href={getPdfUrl(record.filePath)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full mt-5 bg-[#0a1d37] hover:bg-[#c5a059] text-white py-2.5 rounded-lg text-center text-xs font-semibold uppercase tracking-wider transition-colors duration-200 flex items-center justify-center space-x-2 shadow-sm"
+                                >
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="2.5"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                  </svg>
+                                  <span>View Timetable</span>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ) : matchedPdfGallery ? (
+                    <div className="flex flex-col space-y-6">
+
+                      {/* Premium PDF Documents Section */}
+                      <div className="mt-4">
+                        <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
+                          Official Documents & Reports
+                        </h3>
+
+                        {isPdfLoading ? (
+                          /* Shimmer Loading State */
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {Array.from({ length: 3 }).map((_, idx) => (
+                              <div
+                                key={idx}
+                                className="h-44 bg-zinc-150 animate-pulse rounded-xl border border-zinc-200"
+                              />
+                            ))}
+                          </div>
+                        ) : pdfDocuments.length === 0 ? (
+                          <div className="text-zinc-500 py-6 text-center bg-zinc-50 rounded-xl border border-zinc-150">
+                            No documents available.
+                          </div>
+                        ) : (
+                          /* Premium Document Grid */
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {pdfDocuments.map((doc) => (
+                              <div
+                                key={doc.documentId}
+                                className="bg-white rounded-xl border border-zinc-200 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-[#c5a059]/40 transition-all duration-300 p-5 flex flex-col justify-between group"
+                              >
+                                <div className="space-y-4">
+                                  {/* Header Info */}
+                                  <div className="flex items-start space-x-4">
+                                    <div className="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0 group-hover:bg-red-100 transition-colors">
+                                      <svg
+                                        width="20"
+                                        height="20"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="2.2"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                        />
+                                      </svg>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-bold text-zinc-700 leading-snug group-hover:text-[#c5a059] transition-colors line-clamp-2">
+                                        {doc.title}
+                                      </h4>
+                                      <div className="text-[10px] text-zinc-400 font-semibold tracking-wider uppercase">
+                                        PDF Document
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <a
+                                  href={getPdfUrl(doc.filePath)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full mt-5 bg-[#0a1d37] hover:bg-[#c5a059] text-white py-2.5 rounded-lg text-center text-xs font-semibold uppercase tracking-wider transition-colors duration-200 flex items-center justify-center space-x-2 shadow-sm"
+                                >
+                                  <svg
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="2.5"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                  </svg>
+                                  <span>View Document</span>
+                                </a>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   ) : (
                     <div
                       onClick={handleContentClick}
