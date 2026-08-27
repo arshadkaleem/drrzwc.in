@@ -33,7 +33,7 @@ export interface PdfGallery {
 }
 
 const COLLEGE_ID = process.env.NEXT_PUBLIC_COLLEGE_ID || null;
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://college-api.mokshasolutions.com";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://college-api.mokshasolutions.com";
 
 export async function fetchPdfGalleries(): Promise<PdfGallery[]> {
   if (!COLLEGE_ID) {
