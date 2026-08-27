@@ -93,7 +93,9 @@ const PDF_GALLERY_MAPPING: Record<string, string> = {
   'academic-flexibility': 'academic flexibility',
   'continuous-internal-evaluation': 'continuous internal evaluation',
   'academic-calendar': 'academic calendar',
-  'feedback': 'feedback'
+  'feedback': 'feedback',
+  'scholarship-goi': 'scholarship',
+  'best-practices': 'best practices'
 };
 
 const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
@@ -139,16 +141,50 @@ function splitGalleryContent(html: string): { introHtml: string; hasGallery: boo
 function cleanPdfPageContent(html: string): string {
   if (!html) return '';
   // Remove iframes pointing to PDFs
-  let cleaned = html.replace(/<iframe[^>]+src=['"][^'"]+\.pdf['"][^>]*>.*?<\/iframe>/gi, '');
+  let cleaned = html.replace(/<iframe[^>]+src=['"][^'"]+\.pdf['"][^>]*>([\s\S]*?)<\/iframe>/gi, '');
   // Remove any text saying "Powered By EmbedPress"
   cleaned = cleaned.replace(/Powered By EmbedPress/gi, '');
-  // Remove anchor tags pointing to PDFs
-  cleaned = cleaned.replace(/<a[^>]+href=['"][^'"]+\.pdf['"][^>]*>.*?<\/a>/gi, '');
+  // Remove the entire ul if it contains links to pdf, xlsx, xls, doc, docx or contains uploads directory, preventing matching across multiple uls
+  cleaned = cleaned.replace(/<ul[^>]*>(?:(?!<ul)[\s\S])*?(?:\.pdf|\.xlsx|\.xls|\.docx|\.doc|wp-content\/uploads)[\s\S]*?<\/ul>/gi, '');
+  // Remove single standalone anchor tags pointing to PDFs/Excel files
+  cleaned = cleaned.replace(/<a[^>]+href=['"][^'"]*(?:\.pdf|\.xlsx|\.xls|\.docx|\.doc)[^'"]*['"][^>]*>([\s\S]*?)<\/a>/gi, '');
+  // Remove YouTube links (rendered separately as cards)
+  cleaned = cleaned.replace(/https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)[^\s<"']*/gi, '');
   // Remove empty lists or wrappers that might have been left over
-  cleaned = cleaned.replace(/<ul[^>]*>\s*<\/ul>/gi, '');
   cleaned = cleaned.replace(/<li[^>]*>\s*<\/li>/gi, '');
+  cleaned = cleaned.replace(/<ul[^>]*>\s*<\/ul>/gi, '');
+  // Remove empty paragraph tags (possibly containing empty strong or em tags)
+  cleaned = cleaned.replace(/<p[^>]*>(?:\s|&nbsp;|<strong[^>]*>\s*<\/strong>|<em[^>]*>\s*<\/em>)*<\/p>/gi, '');
+  // Remove trailing hr or extra spacing
+  cleaned = cleaned.replace(/<hr\s*\/?>\s*$/gi, '');
   return cleaned.trim();
 }
+
+function extractYoutubeVideos(html: string): { url: string; videoId: string }[] {
+  if (!html) return [];
+  const normalized = html.replace(/&#038;/g, '&');
+  const videos: { url: string; videoId: string }[] = [];
+  const parts = normalized.split(/(?=https?:\/\/)/gi);
+
+  for (const part of parts) {
+    const match = part.match(/(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})[^\s<"']*)/i);
+    if (match) {
+      videos.push({
+        url: match[1].trim(),
+        videoId: match[2]
+      });
+    }
+  }
+
+  return videos;
+}
+
+const hasVisibleText = (html: string) => {
+  if (!html) return false;
+  const text = html.replace(/<[^>]*>/g, '').replace(/&nbsp;/gi, '').replace(/\s+/g, '').trim();
+  if (text.toLowerCase() === 'alumnimeetreport') return false;
+  return text.length > 0;
+};
 
 export default function InnerPage({ page }: InnerPageProps) {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
@@ -176,6 +212,9 @@ export default function InnerPage({ page }: InnerPageProps) {
   const { data: pdfGalleryData, isLoading: isPdfLoading } = usePdfGallery(matchedGalleryId || 0);
   const pdfDocuments = pdfGalleryData?.documents || [];
 
+  // Extract YouTube videos if present on the page
+  const youtubeVideos = extractYoutubeVideos(page.content);
+
   // Fetch timetables if on the time table page
   const isTimetablePage = page.slug === 'time-table-dr-rzcw';
   const { data: timetables, isLoading: isTimetableLoading } = useTimetable({ enabled: isTimetablePage });
@@ -192,7 +231,7 @@ export default function InnerPage({ page }: InnerPageProps) {
 
   const formatPhotoTitle = (title: string | null) => {
     if (!title) return 'Gallery Photo';
-    
+
     // Custom labels for Departmental Library
     const lower = title.toLowerCase();
     if (lower.includes('comp-dept-lib')) return 'Computer Science Department';
@@ -296,7 +335,8 @@ export default function InnerPage({ page }: InnerPageProps) {
   const isContactPage = page.slug === 'contact-us' || page.id === 30;
   const isGalleryPage = page.slug === 'gallery' || page.id === 52;
   const isPrincipalPage = page.slug === 'message' || page.id === 1374 || page.title.toLowerCase().includes('principal');
-  const isTabbedPage = !isContactPage && !isGalleryPage && !isPrincipalPage && (() => {
+  const isVendingMachinePage = page.slug === 'vending-machine' || page.id === 1549;
+  const isTabbedPage = !isContactPage && !isGalleryPage && !isPrincipalPage && !isVendingMachinePage && (() => {
     if (!page.content.includes('\t\t\t\t\t\t\t\t\t')) return false;
     const parts = page.content.split('\t\t\t\t\t\t\t\t\t');
     if (parts.length < 3) return false;
@@ -645,11 +685,11 @@ export default function InnerPage({ page }: InnerPageProps) {
                           {/* Photo Container with Gold Accent */}
                           <div className="relative w-full aspect-[4/3] sm:aspect-square md:aspect-[3/4] overflow-hidden rounded-lg border-2 border-[#c5a059]/40 shadow-sm bg-zinc-100 group">
                             <img
-                              src="/wp-content/uploads/2022/08/Pics_Sir-13-1024x683.jpg"
+                              src="/wp-content/uploads/2022/08/Pics_Sir-13.jpg"
                               alt="Dr. Maqdoom Farooqui - Principal"
                               className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                               onError={(e) => {
-                                e.currentTarget.src = "https://drrzwc.in/wp-content/uploads/2022/08/Pics_Sir-13-1024x683.jpg";
+                                e.currentTarget.src = "https://drrzwc.in/wp-content/uploads/2022/08/Pics_Sir-13.jpg";
                               }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-[#0a1d37]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -719,6 +759,79 @@ export default function InnerPage({ page }: InnerPageProps) {
 
                         <div className="bg-[#faf9f6] p-4 rounded-lg border-l-2 border-[#c5a059] text-zinc-800 text-xs italic font-medium">
                           May Almighty Allah bless the college and all those who are associated with the noble mission of our late founders in the task of teaching & ensuring the progress of students.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : isVendingMachinePage ? (
+                  /* Redesigned Premium Vending Machine Page Layout */
+                  <div className="flex flex-col space-y-8 font-sans">
+                    {/* Header Title & Subtitle */}
+                    <div className="border-b border-zinc-200 pb-4 flex items-center justify-between">
+                      <div>
+                        <span className="text-[#c5a059] font-heading font-bold text-xs uppercase tracking-widest">Campus Facilities & Welfare</span>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#0a1d37] font-heading mt-1">Sanitary Napkin Vending & Disposal Facility</h2>
+                      </div>
+                      <div className="hidden sm:block text-[#c5a059]/20 text-4xl">
+                        <i className="fa fa-heartbeat"></i>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      {/* Left Column: Info & Details (7 cols) */}
+                      <div className="lg:col-span-7 flex flex-col space-y-6 text-zinc-700 text-sm leading-relaxed">
+                        <p className="text-base font-medium text-zinc-800">
+                          Promoting hygiene, health, and comfort for our students.
+                        </p>
+                        <p>
+                          To support the physical well-being, hygiene, and convenience of our female students, Dr. Rafiq Zakaria College for Women has installed automatic sanitary napkin vending machines and eco-friendly incinerators on campus.
+                        </p>
+                        <p>
+                          These facilities are strategically placed in the common room and ladies' washrooms, providing an accessible, private, and dignified solution for menstrual hygiene management.
+                        </p>
+
+                        <div className="bg-[#faf9f6] p-5 rounded-xl border border-zinc-200/80 border-l-4 border-l-[#c5a059] space-y-4 shadow-sm">
+                          <h4 className="text-sm font-extrabold text-[#0a1d37] font-heading uppercase tracking-wider">
+                            Key Features & Highlights
+                          </h4>
+                          <ul className="space-y-3 text-xs">
+                            <li className="flex items-start">
+                              <span className="text-[#c5a059] mr-2.5 font-bold">✓</span>
+                              <span><strong>Eco-Friendly Incinerator:</strong> Advanced electric incinerators are installed for clean, safe, and hygienic waste disposal.</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="text-[#c5a059] mr-2.5 font-bold">✓</span>
+                              <span><strong>Convenient Locations:</strong> Safely and privately accessible in common areas and washrooms.</span>
+                            </li>
+                            <li className="flex items-start">
+                              <span className="text-[#c5a059] mr-2.5 font-bold">✓</span>
+                              <span><strong>Subsidized Rates:</strong> Offered at a highly nominal cost to ensure affordability for all students.</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                      {/* Right Column: Photo (5 cols) */}
+                      <div className="lg:col-span-5 flex flex-col items-center">
+                        <div className="w-full bg-[#faf9f6] p-4 rounded-xl border border-zinc-200 shadow-md flex flex-col items-center">
+                          {/* Image Container with Gold Accent */}
+                          <div className="relative w-full overflow-hidden rounded-lg border-2 border-[#c5a059]/40 shadow-sm bg-zinc-100 group">
+                            <img
+                              src="/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-15-at-6.03.07-PM.jpeg"
+                              alt="Sanitary Napkin Vending Machine Facility"
+                              className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-103"
+                              onError={(e) => {
+                                e.currentTarget.src = "https://drrzwc.in/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-15-at-6.03.07-PM.jpeg";
+                              }}
+                            />
+                            {/* Hover Overlay */}
+                            <div className="absolute inset-0 bg-[#0a1d37]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                          </div>
+                          <div className="mt-3 text-center">
+                            <p className="text-zinc-600 text-xs font-semibold uppercase tracking-wider font-heading">
+                              On-Campus Vending Unit
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1252,6 +1365,14 @@ export default function InnerPage({ page }: InnerPageProps) {
                     </div>
                   ) : (page.slug in PDF_GALLERY_MAPPING) ? (
                     <div className="flex flex-col space-y-6">
+                      {/* Render text/HTML content of the page if it has visible text after cleaning */}
+                      {hasVisibleText(cleanPdfPageContent(page.content)) && (
+                        <div
+                          onClick={handleContentClick}
+                          className="leftside break-words border-b border-zinc-200 pb-6 mb-4"
+                          dangerouslySetInnerHTML={{ __html: cleanHtmlContent(cleanPdfPageContent(page.content)) }}
+                        />
+                      )}
 
                       {/* Premium PDF Documents Section */}
                       <div className="mt-4">
@@ -1301,7 +1422,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                                       </svg>
                                     </div>
                                     <div className="space-y-1">
-                                      <h4 className="text-sm font-bold text-zinc-700 leading-snug group-hover:text-[#c5a059] transition-colors line-clamp-2">
+                                      <h4 className="text-lg font-bold text-zinc-700 leading-snug group-hover:text-[#c5a059] transition-colors line-clamp-2">
                                         {doc.title}
                                       </h4>
                                       <div className="text-[10px] text-zinc-400 font-semibold tracking-wider uppercase">
@@ -1343,6 +1464,44 @@ export default function InnerPage({ page }: InnerPageProps) {
                           </div>
                         )}
                       </div>
+
+                      {/* Premium YouTube Videos Section */}
+                      {youtubeVideos.length > 0 && (
+                        <div className="mt-8 border-t border-zinc-150 pt-8">
+                          <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
+                            Video Resources & Presentations
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {youtubeVideos.map((video, idx) => (
+                              <div key={idx} className="bg-white border border-zinc-200 p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between group hover:shadow-md hover:border-[#c5a059]/40 transition-all duration-300">
+                                <div className="w-full aspect-video rounded-lg overflow-hidden border border-zinc-200 bg-black relative">
+                                  <iframe
+                                    src={`https://www.youtube.com/embed/${video.videoId}`}
+                                    className="w-full h-full border-0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    title={`YouTube Video ${idx + 1}`}
+                                  ></iframe>
+                                </div>
+                                <div className="mt-4 flex items-center justify-between">
+                                  <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+                                    Video Presentation {idx + 1}
+                                  </span>
+                                  <a
+                                    href={video.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center space-x-1.5 text-xs font-bold text-[#0a1d37] hover:text-[#c5a059] transition-colors font-heading"
+                                  >
+                                    <i className="fa fa-youtube-play text-red-600 text-sm"></i>
+                                    <span>Watch on YouTube</span>
+                                  </a>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div
