@@ -106,7 +106,8 @@ const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
   'zoology': { id: 58, title: 'Zoology' },
   'mathematics': { id: 59, title: 'Maths' },
   'earn-and-learn': { id: 61, title: 'Earn and Learn' },
-  'departmental-library': { id: 62, title: 'Departmental Library' }
+  'departmental-library': { id: 62, title: 'Departmental Library' },
+  'gallery': { id: 63, title: 'College Gallery' }
 };
 
 function splitGalleryContent(html: string): { introHtml: string; hasGallery: boolean } {
@@ -419,7 +420,7 @@ export default function InnerPage({ page }: InnerPageProps) {
   const staticGalleryImages = isGalleryPage ? extractGalleryImages(page.content) : [];
 
   // Choose images list to show in lightbox (static gallery vs dynamic click intercept)
-  const currentLightboxList = isGalleryPage ? staticGalleryImages : lightboxImages;
+  const currentLightboxList = isGalleryPage ? galleryPhotos : lightboxImages;
 
   // Handle Lightbox Keyboard Navigation Actions
   useEffect(() => {
@@ -638,32 +639,53 @@ export default function InnerPage({ page }: InnerPageProps) {
                     <p className="text-zinc-500 text-sm leading-relaxed mb-4">
                       Browse through photographs of our college campus, departments, functions, and academic events. Click on any image to view it in full size.
                     </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      {staticGalleryImages.map((img, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => setLightboxIndex(idx)}
-                          className="group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
-                        >
-                          <div className="aspect-[4/3] w-full overflow-hidden relative bg-zinc-100">
-                            <img
-                              src={img.thumbnailUrl}
-                              alt={img.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                              onError={(e) => {
-                                e.currentTarget.src = `https://drrzwc.in${img.thumbnailUrl}`;
-                              }}
-                            />
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-[#0a1d37]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                              <span className="bg-white/95 text-[#0a1d37] px-4 py-2.5 rounded-full text-[10px] font-bold font-heading tracking-widest shadow-md transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 uppercase">
-                                View Image
-                              </span>
+
+                    {isAlbumLoading ? (
+                      /* Shimmer Loading State */
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {Array.from({ length: 8 }).map((_, idx) => (
+                          <div
+                            key={idx}
+                            className="aspect-[4/3] w-full bg-zinc-200 animate-pulse rounded-lg"
+                          />
+                        ))}
+                      </div>
+                    ) : albumError ? (
+                      <div className="text-red-500 font-medium py-4 text-center">
+                        Failed to load photo gallery. Please try again later.
+                      </div>
+                    ) : galleryPhotos.length === 0 ? (
+                      <div className="text-zinc-500 py-4 text-center">
+                        No photos available in the gallery.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {galleryPhotos.map((img, idx) => (
+                          <div
+                            key={idx}
+                            onClick={() => setLightboxIndex(idx)}
+                            className="group relative cursor-pointer overflow-hidden rounded-lg border border-zinc-200/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_10px_30px_rgba(197,160,89,0.15)] hover:border-[#c5a059]/40 transition-all duration-300 transform hover:-translate-y-1 bg-zinc-50"
+                          >
+                            <div className="aspect-[4/3] w-full overflow-hidden relative bg-zinc-100">
+                              <img
+                                src={img.thumbnailUrl}
+                                alt={img.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                onError={(e) => {
+                                  e.currentTarget.src = img.fullUrl;
+                                }}
+                              />
+                              {/* Hover Overlay */}
+                              <div className="absolute inset-0 bg-[#0a1d37]/45 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                <span className="bg-white/95 text-[#0a1d37] px-4 py-2.5 rounded-full text-[10px] font-bold font-heading tracking-widest shadow-md transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 uppercase">
+                                  View Image
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ) : isPrincipalPage ? (
                   /* Redesigned Principal's Message Layout */
