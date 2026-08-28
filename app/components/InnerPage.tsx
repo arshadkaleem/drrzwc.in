@@ -95,7 +95,8 @@ const PDF_GALLERY_MAPPING: Record<string, string> = {
   'academic-calendar': 'academic calendar',
   'feedback': 'feedback',
   'scholarship-goi': 'scholarship',
-  'best-practices': 'best practices'
+  'best-practices': 'best practices',
+  'aqar-details': 'aqar'
 };
 
 const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
@@ -1085,7 +1086,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                                 </div>
                                 <div className="group relative overflow-hidden max-w-xs transition-all duration-300">
                                   <img
-                                    src="https://drrzwc.in/wp-content/uploads/2023/02/AboutIQACSecond-269x300.jpg"
+                                    src="https://drrzwc.in/wp-content/uploads/2023/02/AboutIQACSecond.jpg"
                                     alt="IQAC Hierarchy Chart"
                                     className="w-full h-auto max-h-[300px] object-contain transition-transform duration-500 group-hover:scale-103"
                                   />
