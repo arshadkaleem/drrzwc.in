@@ -110,7 +110,7 @@ export default function Footer() {
         {/* Footer Bottom Copyright */}
         <div className="pt-6 text-center text-xs text-zinc-400">
           <p>
-            Copyright © 2024 Dr. Rafiq Zakaria College for Women. All rights reserved. | Designed by{' '}
+            Copyright © {new Date().getFullYear()} Dr. Rafiq Zakaria College for Women. All rights reserved. | Designed by{' '}
             <a
               href="https://mokshasolutions.com/"
               target="_blank"
