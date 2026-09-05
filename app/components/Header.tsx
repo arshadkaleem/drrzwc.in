@@ -16,7 +16,9 @@ interface MenuItem {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileQuickLinksOpen, setMobileQuickLinksOpen] = useState(false);
   const [expandedMobileMenus, setExpandedMobileMenus] = useState<Record<number, boolean>>({});
+  const quickLinksRef = useRef<HTMLDivElement>(null);
 
   // Filter links to split the menu and prevent it from wrapping to 2 lines
   // Removed "Highlights" from top bar titles as requested
@@ -50,9 +52,6 @@ export default function Header() {
     return idxA - idxB;
   });
 
-  // Mobile menu links (Main navigation first, followed by utility links, omitting Highlights)
-  const mobileNavLinks = [...mainNavLinks, ...topBarLinks];
-
   const toggleMobileSubmenu = (id: number, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -80,10 +79,79 @@ export default function Header() {
     return clean;
   };
 
-  // Close mobile menu when route changes
+  // Close mobile menus on click outside or escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (quickLinksRef.current && !quickLinksRef.current.contains(event.target as Node)) {
+        setMobileQuickLinksOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileQuickLinksOpen(false);
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileQuickLinksOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileQuickLinksOpen]);
+
+  // Close mobile menus on initial load / navigation
   useEffect(() => {
     setMobileMenuOpen(false);
+    setMobileQuickLinksOpen(false);
   }, []);
+
+  const getHeaderMenuIcon = (title: string) => {
+    switch (title.toLowerCase()) {
+      case 'library':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        );
+      case 'gallery':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        );
+      case 'nirf':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+          </svg>
+        );
+      case 'contact us':
+      case 'contact':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        );
+      case 'feedback':
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+          </svg>
+        );
+      default:
+        return (
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+          </svg>
+        );
+    }
+  };
 
   // Desktop Submenu component (recursive)
   const DesktopSubmenu = ({ items, depth = 1 }: { items: MenuItem[]; depth?: number }) => {
@@ -200,12 +268,14 @@ export default function Header() {
   return (
     <header className="w-full flex flex-col bg-white shadow-sm font-sans">
       {/* Top Utility Bar (Utility links split to keep primary navbar single-lined) */}
-      <div className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 py-2">
+      <div className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 py-2 relative z-50">
         <div className="mx-auto px-4 md:px-12 flex justify-between items-center text-white">
-          <div className="text-[10px] md:text-xs text-zinc-400 font-bold tracking-widest font-heading uppercase select-none">
+          <div className=" text-[9px] md:text-xs text-zinc-400 font-bold tracking-widest font-heading uppercase select-none">
             Affiliated to Dr. BAMU, Aurangabad
           </div>
-          <ul className="flex items-center space-x-3 md:space-x-4 divide-x divide-zinc-700/50">
+
+          {/* Desktop utility links */}
+          <ul className="hidden md:flex items-center space-x-3 md:space-x-4 divide-x divide-zinc-700/50">
             {topBarLinks.map((item: any) => {
               const href = cleanUrl(item.url, item.object_id);
               return (
@@ -220,6 +290,65 @@ export default function Header() {
               );
             })}
           </ul>
+
+          {/* Mobile Quick Links / Header Menus Button & Dropdown */}
+          <div className="relative md:hidden" ref={quickLinksRef}>
+            <button
+              onClick={() => setMobileQuickLinksOpen(!mobileQuickLinksOpen)}
+              className="flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold text-[#c5a059] bg-[#c5a059]/10 hover:bg-[#c5a059]/20 active:bg-[#c5a059]/30 border border-[#c5a059]/40 rounded-full transition-all duration-200 font-heading shadow-xs select-none"
+              aria-expanded={mobileQuickLinksOpen}
+              aria-label="Toggle Header Menus"
+            >
+              <svg className="w-3.5 h-3.5 text-[#c5a059]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+              <span>Quick Links</span>
+              <svg
+                className={`w-3 h-3 text-[#c5a059] transition-transform duration-200 ${mobileQuickLinksOpen ? 'rotate-180' : ''
+                  }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {/* Mobile Header Menus Popup */}
+            {mobileQuickLinksOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-[#0a1d37] border border-[#c5a059]/40 rounded-xl shadow-2xl p-2 z-50 backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="px-2.5 py-1.5 border-b border-zinc-700/60 mb-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#c5a059] font-heading">
+                    Header Menus
+                  </span>
+                </div>
+
+                <div className="flex flex-col space-y-1">
+                  {topBarLinks.map((item: any) => {
+                    const href = cleanUrl(item.url, item.object_id);
+                    return (
+                      <Link
+                        key={`header-menu-${item.id}`}
+                        href={href}
+                        onClick={() => setMobileQuickLinksOpen(false)}
+                        className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-zinc-200 hover:text-white hover:bg-[#c5a059]/20 rounded-lg transition-colors font-heading group"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-[#c5a059] group-hover:scale-110 transition-transform">
+                            {getHeaderMenuIcon(item.title)}
+                          </span>
+                          <span>{item.title}</span>
+                        </div>
+                        <svg className="w-3 h-3 text-zinc-500 group-hover:text-[#c5a059] group-hover:translate-x-0.5 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -266,7 +395,7 @@ export default function Header() {
       </div>
 
       {/* Navigation Bar */}
-      <nav className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 relative z-50 shadow-md">
+      <nav className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 relative z-40 shadow-md">
         <div className="mx-auto px-4 md:px-12 flex items-center justify-between md:justify-start">
 
           {/* Mobile hamburger menu toggle */}
@@ -321,8 +450,37 @@ export default function Header() {
         {/* Mobile Dropdown Panel */}
         {mobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl z-50 border-t border-zinc-200 max-h-[80vh] overflow-y-auto">
+            {/* Header Menus Quick Shortcuts Bar */}
+            <div className="p-3 bg-zinc-50 border-b border-zinc-200">
+              <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider font-heading mb-2 flex items-center justify-between">
+                <span>Header Menus</span>
+                <span className="text-[9px] bg-[#c5a059]/20 text-[#856523] px-1.5 py-0.5 rounded font-semibold font-sans">
+                  Quick Access
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {topBarLinks.map((item: any) => {
+                  const href = cleanUrl(item.url, item.object_id);
+                  return (
+                    <Link
+                      key={`shortcut-${item.id}`}
+                      href={href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-2 p-2 rounded-lg bg-white border border-zinc-200/80 hover:border-[#c5a059] hover:bg-[#c5a059]/5 transition-all text-xs font-semibold text-zinc-700 hover:text-[#0a1d37] font-heading shadow-xs"
+                    >
+                      <span className="text-[#c5a059] flex-shrink-0">
+                        {getHeaderMenuIcon(item.title)}
+                      </span>
+                      <span className="truncate">{item.title}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Main Navigation List */}
             <ul className="px-4 py-2 flex flex-col">
-              {mobileNavLinks.map((item: any) => {
+              {mainNavLinks.map((item: any) => {
                 const hasChildren = item.children && item.children.length > 0;
                 const isExpanded = !!expandedMobileMenus[item.id];
                 const href = cleanUrl(item.url, item.object_id);
