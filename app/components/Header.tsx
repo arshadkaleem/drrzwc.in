@@ -270,7 +270,7 @@ export default function Header() {
       {/* Top Utility Bar (Utility links split to keep primary navbar single-lined) */}
       <div className="w-full bg-[#0a1d37] border-b border-[#c5a059]/20 py-2 relative z-50">
         <div className="mx-auto px-4 md:px-12 flex justify-between items-center text-white">
-          <div className=" text-[9px] md:text-xs text-zinc-400 font-bold tracking-widest font-heading uppercase select-none">
+          <div className="text-[9px] md:text-xs text-zinc-400 font-bold tracking-widest font-heading uppercase select-none">
             Affiliated to Dr. BAMU, Aurangabad
           </div>
 

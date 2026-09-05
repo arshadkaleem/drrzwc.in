@@ -42,15 +42,9 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${outfit.variable} ${plusJakarta.variable} ${playfair.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <head>
-        <link rel="icon" href="/logo.png" type="image/png" />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-        />
-      </head>
-      <body className="min-h-full flex flex-col bg-[#faf9f6] text-zinc-800 font-sans">
+      <body className="min-h-full flex flex-col bg-[#faf9f6] text-zinc-800 font-sans" suppressHydrationWarning>
         <Providers>
           <Header />
           <main className="flex-1 flex flex-col w-full">
