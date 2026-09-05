@@ -178,7 +178,7 @@ export default async function Home({ searchParams }: PageProps) {
 
             {/* About Us (8/12 wide) */}
             <div className="lg:col-span-8 bg-[#faf9f6]/40 p-6 md:p-8 rounded-lg border border-zinc-150">
-              <h2 className="text-2xl md: text-3xl font-bold text-[#0a1d37] font-heading">About Us</h2>
+              <h2 className="text-2xl md:text-3xl font-bold text-[#0a1d37] font-heading">About Us</h2>
               <div className="double-line-bottom w-full mb-6"></div>
 
               <p className="text-[#c5a059] font-bold text-base md:text-lg mb-4">

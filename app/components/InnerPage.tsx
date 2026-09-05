@@ -193,7 +193,7 @@ export default function InnerPage({ page }: InnerPageProps) {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [lightboxImages, setLightboxImages] = useState<GalleryImage[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('');
+  const [userSelectedTab, setUserSelectedTab] = useState<string | null>(null);
 
   const albumConfig = ALBUM_MAPPING[page.slug];
   const albumId = albumConfig ? albumConfig.id : 0;
@@ -407,14 +407,15 @@ export default function InnerPage({ page }: InnerPageProps) {
     }
   }
 
-  // Set default active tab and reset when route changes
+  // Derive active tab synchronously so SSR and initial Client render match 100%
+  const activeTab = (userSelectedTab && tabHeaders.includes(userSelectedTab))
+    ? userSelectedTab
+    : (tabHeaders[0] || '');
+
+  // Reset tab selection when navigating to another page
   useEffect(() => {
-    if (isTabbedPage && tabHeaders.length > 0) {
-      setActiveTab(tabHeaders[0]);
-    } else {
-      setActiveTab('');
-    }
-  }, [page.id, page.slug, isTabbedPage]);
+    setUserSelectedTab(null);
+  }, [page.id, page.slug]);
 
   // Dedicated static gallery images loading
   const staticGalleryImages = isGalleryPage ? extractGalleryImages(page.content) : [];
@@ -879,7 +880,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                             return (
                               <button
                                 key={header}
-                                onClick={() => setActiveTab(header)}
+                                onClick={() => setUserSelectedTab(header)}
                                 className={`px-5 py-3 text-xs md:text-[11px] font-extrabold font-heading uppercase tracking-widest transition-all duration-200 rounded-t-lg border-t-2 border-x ${isActive
                                   ? 'bg-[#0a1d37] text-[#c5a059] border-t-[#c5a059] border-x-zinc-200 shadow-sm'
                                   : 'bg-[#faf9f6]/60 text-zinc-500 border-t-transparent border-x-transparent hover:bg-zinc-100/50 hover:text-[#0a1d37]'
