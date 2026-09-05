@@ -42,7 +42,7 @@ export async function fetchPdfGalleries(): Promise<PdfGallery[]> {
   const response = await fetch(`${API_BASE_URL}/api/public/pdf/college/${COLLEGE_ID}`);
 
   if (!response.ok) {
-    throw new Error("Failed to fetch PDF galleries");
+    throw new Error("Failed to fetch the Documents");
   }
 
   return response.json();
