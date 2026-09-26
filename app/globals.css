@@ -289,6 +289,11 @@
   text-decoration-color: #c5a059;
 }
 
+.leftside a[style*="background"],
+.leftside a.btn-doc {
+  text-decoration: none !important;
+}
+
 .leftside h2 {
   font-family: var(--font-outfit), sans-serif;
   font-size: 1.5rem;
