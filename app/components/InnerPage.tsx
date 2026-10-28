@@ -96,7 +96,8 @@ const PDF_GALLERY_MAPPING: Record<string, string> = {
   'feedback': 'feedback',
   'scholarship-goi': 'scholarship',
   'best-practices': 'best practices',
-  'aqar-details': 'aqar'
+  'aqar-details': 'aqar',
+  'internal-complaint-cell': 'internal compliant cell'
 };
 
 const ALBUM_MAPPING: Record<string, { id: number; title: string }> = {
@@ -205,7 +206,10 @@ export default function InnerPage({ page }: InnerPageProps) {
     const titleLower = g.title.toLowerCase().trim();
     if (titleLower === page.title.toLowerCase().trim()) return true;
     const mappedTitle = PDF_GALLERY_MAPPING[page.slug];
-    if (mappedTitle && titleLower === mappedTitle) return true;
+    if (mappedTitle && (
+      titleLower === mappedTitle ||
+      (page.slug === 'internal-complaint-cell' && (titleLower === 'internal compliant cell' || titleLower === 'internal complaint cell'))
+    )) return true;
     return false;
   });
   const matchedGalleryId = matchedPdfGallery?.galleryId;
@@ -1450,7 +1454,7 @@ export default function InnerPage({ page }: InnerPageProps) {
                                         {doc.title}
                                       </h4>
                                       <div className="text-[10px] text-zinc-400 font-semibold tracking-wider uppercase">
-                                        PDF Document
+                                        PDF Document {doc.fileSizeInBytes ? `• ${formatBytes(doc.fileSizeInBytes)}` : ''}
                                       </div>
                                     </div>
                                   </div>
