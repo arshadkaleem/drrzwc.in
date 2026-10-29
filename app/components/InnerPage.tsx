@@ -163,6 +163,56 @@ function cleanPdfPageContent(html: string): string {
   return cleaned.trim();
 }
 
+interface PageVideo {
+  url: string;
+  title: string;
+}
+
+const ICC_VIDEOS: PageVideo[] = [
+  {
+    title: 'NSS program at Z.P Urdu School',
+    url: '/wp-content/uploads/2026/ICC/nss_pledge.mp4'
+  },
+  {
+    title: 'Cleanliness Impact Assesment',
+    url: '/wp-content/uploads/2026/ICC/cleanliness.mp4'
+  },
+  {
+    title: 'Nutrition Month Celebration',
+    url: '/wp-content/uploads/2026/ICC/nutritionmonth_celeb.mp4'
+  }
+];
+
+function extractLocalVideos(html: string): PageVideo[] {
+  if (!html) return [];
+  const videos: PageVideo[] = [];
+  const regex = /<video[^>]+src=['"]([^'"]+\.mp4)['"][^>]*(?:title=['"]([^'"]*)['"])?[^>]*>/gi;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    const url = match[1];
+    let title = match[2] || '';
+    if (!title) {
+      const after = html.slice(match.index, match.index + 300);
+      const capMatch = after.match(/<(?:figcaption|h\d|p|span)[^>]*>(.*?)<\/(?:figcaption|h\d|p|span)>/i);
+      if (capMatch) title = capMatch[1].replace(/<[^>]+>/g, '').trim();
+    }
+    if (!videos.some(v => v.url === url)) {
+      videos.push({ url, title: title || 'Video' });
+    }
+  }
+
+  const anchorRegex = /<a[^>]+href=['"]([^'"]+\.mp4)['"][^>]*>([\s\S]*?)<\/a>/gi;
+  while ((match = anchorRegex.exec(html)) !== null) {
+    const url = match[1];
+    const rawText = match[2].replace(/<[^>]+>/g, '').trim();
+    if (!videos.some(v => v.url === url)) {
+      videos.push({ url, title: rawText || 'Video' });
+    }
+  }
+
+  return videos;
+}
+
 function extractYoutubeVideos(html: string): { url: string; videoId: string }[] {
   if (!html) return [];
   const normalized = html.replace(/&#038;/g, '&');
@@ -220,6 +270,10 @@ export default function InnerPage({ page }: InnerPageProps) {
 
   // Extract YouTube videos if present on the page
   const youtubeVideos = extractYoutubeVideos(page.content);
+  const localVideos = [
+    ...(page.slug === 'internal-complaint-cell' ? ICC_VIDEOS : []),
+    ...extractLocalVideos(page.content)
+  ].filter((v, idx, arr) => arr.findIndex(item => item.url === v.url) === idx);
 
   // Fetch timetables if on the time table page
   const isTimetablePage = page.slug === 'time-table-dr-rzcw';
@@ -1297,6 +1351,8 @@ export default function InnerPage({ page }: InnerPageProps) {
                   ) : isTimetablePage ? (
                     <div className="flex flex-col space-y-6">
                       {/* Premium Timetable Documents Section */}
+
+
                       <div className="mt-4">
                         <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
                           College Timetables
@@ -1403,6 +1459,8 @@ export default function InnerPage({ page }: InnerPageProps) {
                       )}
 
                       {/* Premium PDF Documents Section */}
+
+
                       <div className="mt-4">
                         <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
                           Official Documents & Reports
@@ -1494,12 +1552,33 @@ export default function InnerPage({ page }: InnerPageProps) {
                       </div>
 
                       {/* Premium YouTube Videos Section */}
-                      {youtubeVideos.length > 0 && (
+                      {(youtubeVideos.length > 0 || localVideos.length > 0) && (
                         <div className="mt-8 border-t border-zinc-150 pt-8">
                           <h3 className="text-lg font-bold font-heading text-[#0a1d37] border-b-2 border-[#c5a059] pb-2 mb-6 inline-block">
-                            Video Resources & Presentations
+                            Video Resources & Activities
                           </h3>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {localVideos.map((video, idx) => (
+                              <div key={`local-${idx}`} className="bg-white border border-zinc-200 p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between group hover:shadow-md hover:border-[#c5a059]/40 transition-all duration-300">
+                                <div className="w-full aspect-video rounded-lg overflow-hidden border border-zinc-200 bg-black relative shadow-inner">
+                                  <video
+                                    src={video.url}
+                                    controls
+                                    preload="metadata"
+                                    playsInline
+                                    className="w-full h-full object-contain bg-black"
+                                  />
+                                </div>
+                                <div className="mt-4 flex flex-col space-y-1">
+                                  <span className="text-[10px] text-[#c5a059] font-bold uppercase tracking-wider font-heading">
+                                    Activity Video
+                                  </span>
+                                  <h4 className="text-sm font-bold text-[#0a1d37] leading-snug font-heading">
+                                    {video.title}
+                                  </h4>
+                                </div>
+                              </div>
+                            ))}
                             {youtubeVideos.map((video, idx) => (
                               <div key={idx} className="bg-white border border-zinc-200 p-5 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col justify-between group hover:shadow-md hover:border-[#c5a059]/40 transition-all duration-300">
                                 <div className="w-full aspect-video rounded-lg overflow-hidden border border-zinc-200 bg-black relative">
